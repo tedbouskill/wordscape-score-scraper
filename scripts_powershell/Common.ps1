@@ -57,22 +57,13 @@ function New-Venv {
 }
 
 function Copy-HostFile {
-    $hostFile = ""
-    $targetPath = "$repo_root/host_config.json"
-
-    if ($IsMacOS) {
-        $hostFile = "$repo_root/templates/config.[HOST-MAC].json"
-    } elseif ($IsWindows) {
-        $hostFile = "$repo_root/templates/config.[HOST-PC].json"
-    } else {
-        Write-Output "Unsupported OS"
-        return
-    }
+    $hostFile = "$repo_root/templates/config.[HOST-PC].json"
+    $targetPath = "$repo_root/config.$env:COMPUTERNAME.json"
 
     if (-Not (Test-Path -Path $targetPath)) {
         Copy-Item -Path $hostFile -Destination $targetPath
         $hostName = $env:COMPUTERNAME
-        (Get-Content -Path $targetPath) -replace "\[HOST\]", $hostName | Set-Content -Path $targetPath
+        (Get-Content -Path $targetPath) -replace "\[HOST-PC\]", $hostName | Set-Content -Path $targetPath
     } else {
         Write-Output "Host file already exists at $targetPath"
     }

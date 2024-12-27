@@ -53,21 +53,23 @@ new_venv() {
 
 copy_host_file() {
     local host_file=""
-    local target_path="$repo_root/host_config.json"
+    local target_path=""
 
     if [ "$(uname)" == "Darwin" ]; then
         host_file="$repo_root/templates/config.[HOST-MAC].json"
-    elif [ "$(uname)" == "MINGW64_NT-10.0" ]; then
-        host_file="$repo_root/templates/config.[HOST-PC].json"
+        target_path="$repo_root/config.$(hostname).json"
+    elif [ "$(uname)" == "Linux" ]; then
+        echo "Unsupported OS: Linux"
+        return 1
     else
         echo "Unsupported OS"
-        return
+        return 1
     fi
 
     if [ ! -f "$target_path" ]; then
         cp "$host_file" "$target_path"
         local host_name=$(hostname)
-        sed -i '' "s/\[HOST\]/$host_name/g" "$target_path"
+        sed -i '' "s/\[HOST-MAC\]/$host_name/g" "$target_path"
     else
         echo "Host file already exists at $target_path"
     fi
