@@ -1,0 +1,50 @@
+{
+    "keys": {
+        "_comment": "These are the keys that are used in the application",
+        "APP_NAME": {
+            "KEY1": "",
+            "KEY2": ""
+        }
+    },
+    "GoogleCloudCredentials": {
+        "_comment": "The property holding the project ID and keyfile_path is the friendly project name",
+        "GoogleCloudStorage" : {
+            "project_id": "[Add your project ID]",
+            "_comment": "The keyfile_path is a subfolder off the root of the repo and the file is not in the Git repo",
+            "keyfile_path": "key_files/[Add your key file name].json"
+        },
+        "GoogleBigQuery" : {
+            "project_id": "[Add your project ID]",
+            "_comment": "The keyfile_path is a subfolder off the root of the repo and the file is not in the Git repo",
+            "keyfile_path": "key_files/[Add your key file name].json"
+        }
+    },
+    "pgConnStrs": {
+        "_comment": "These are the passwords merged in app_keys.json",
+        "development":{
+            "postgres" : {
+                "password": ""
+            }
+        },
+        "localhost":{
+            "postbres" : {
+                "password": ""
+            }
+        },
+        "qa":{
+            "postgres" : {
+                "password": ""
+            }
+        },
+        "production":{
+            "postgres" : {
+                "password": ""
+            }
+        },
+        "staging":{
+            "postgres" : {
+                "password": ""
+            }
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Script",
+            "type": "shell",
+            "command": "WORKSPACE_ROOT=${workspaceFolder} python ${file}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Add Sub-Project",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "Setting up Python Subproject..."
+            ],
+            "windows": {
+                "command": ".\\scripts_shell\\Add-Sub-Project.ps1",
+                "type": "shell"
+            },
+            "linux": {
+                "command": "./scripts_shell/add_sub_project.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "./scripts_shell/add_sub_project.sh",
+                "type": "shell"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Setup All Projects",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "Setting up Projects..."
+            ],
+            "windows": {
+                "command": ".\\shell-scripts\\Setup-Python-Projects.ps1",
+                "type": "shell"
+            },
+            "linux": {
+                "command": "./scripts_shell/setup_python_projects.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "./scripts_shell/setup_python_projects.sh",
+                "type": "shell"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "pip freeze requirements.txt",
+            "type": "shell",
+            "command": "pip freeze > requirements.txt",
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "windows": {
+                "command": ".\\.venv\\Scripts\\pip freeze > requirements.txt"
+            },
+            "linux": {
+                "command": "./.venv/bin/pip freeze > requirements.txt"
+            },
+            "osx": {
+                "command": "./.venv/bin/pip freeze > requirements.txt"
+            }
+        }
+    ]
+}

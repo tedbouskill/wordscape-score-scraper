@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "name": "WORDSCAPE-SCORE-SCRAPER",
+      "path": "."
+    },
+    {
+      "name": "GOOGLE-BIGQUERY",
+      "path": "google-bigquery"
+    },
+    {
+      "name": "GOOGLE-CLOUD-STORAGE",
+      "path": "google-cloud-storage"
+    }
+  ],
+  "settings": {
+    "terminal.integrated.env.linux": {
+      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "terminal.integrated.env.windows": {
+      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "terminal.integrated.env.osx": {
+      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "powershell.cwd": "WORDSCAPE-SCORE-SCRAPER",
+    "search.exclude": {
+      "**/.venv/": true,
+      "**/samples/": true,
+      "**/tmp/": true
+    }
+  }
+}

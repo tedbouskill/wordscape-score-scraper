@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "name": "[REPO-NAME]",
+      "path": "."
+    },
+    {
+      "name": "GOOGLE-BIGQUERY",
+      "path": "google-bigquery"
+    },
+    {
+      "name": "GOOGLE-CLOUD-STORAGE",
+      "path": "google-cloud-storage"
+    }
+  ],
+  "settings": {
+    "terminal.integrated.env.linux": {
+      "REPO_ROOT": "${workspaceFolder:[REPO-NAME]}",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:[REPO-NAME]}/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "terminal.integrated.env.windows": {
+      "REPO_ROOT": "${workspaceFolder:[REPO-NAME]",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:[REPO-NAME]/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "terminal.integrated.env.osx": {
+      "REPO_ROOT": "${workspaceFolder:[REPO-NAME]}",
+      "WORKSPACE_ROOT": "${workspaceFolder}",
+      "PYTHONPATH": "${workspaceFolder:[REPO-NAME]}/repo_packages;${workspaceFolder}/workspace_packages"
+    },
+    "powershell.cwd": "[REPO-NAME]",
+    "search.exclude": {
+      "**/.venv/": true,
+      "**/samples/": true,
+      "**/tmp/": true
+    }
+  }
+}

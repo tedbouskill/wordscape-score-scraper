@@ -1,0 +1,21 @@
+{
+    "_commentDocumentation" : {
+        "_commentREADME": "The file README_Configuration.md has additional document for how the configuration process works.",
+        "_commentUsage": [
+            "Add the key for the Postgres servers to the pgServers properties",
+            "Add the base folders for the computer that will be using this file",
+            "Save this file as config.hostname.json using the hostname of the computer hosting this repository"
+       ]
+    },
+    {
+        "pgServers": {
+            "sourcePostgres": "production",
+            "targetPostgresDev": "localdev",
+            "targetPostgresProd": "production"
+        },
+        "GoogleBaseFolders": {
+            "BigQueryBase": "",
+            "BigQueryPatentsBase": ""
+        }
+    }
+}

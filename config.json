@@ -1,0 +1,7 @@
+{
+    "_commentDocumentation": {
+        "_comment": "A leading underscore will represent comments in the JSON but will be removed at runtime.",
+        "_commentNamingConvention": "Names using snake_case match object names in the code or Postgres.",
+        "_commentREADME": "The file README_Configuration.md has additional document for how the configuration process works."
+    }
+}

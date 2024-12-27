@@ -1,0 +1,11 @@
+{
+    "pgServers": {
+        "sourcePostgres": "production",
+        "targetPostgresDev": "localhost",
+        "targetPostgresProd": "production"
+    },
+    "GoogleBaseFolders": {
+        "BigQueryBase": "d:/BigData/BigQuery",
+        "BigQueryPatentsBase": "d:/BigData/BigQuery/Patents"
+    }
+}
