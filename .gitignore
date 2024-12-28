@@ -1,3 +1,6 @@
+/process_screenshots/**/
+*.png
+
 # Ignore other files in this folder
 .vscode/*
 
