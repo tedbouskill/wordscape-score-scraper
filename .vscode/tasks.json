@@ -8,6 +8,19 @@
             "problemMatcher": []
         },
         {
+            "label": "Run AppleScript",
+            "type": "shell",
+            "command": "osascript",
+            "args": [
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "Add Sub-Project",
             "type": "shell",
             "command": "echo",
