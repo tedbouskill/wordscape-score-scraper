@@ -1,5 +1,7 @@
 /process_screenshots/**/
-*.png
+/process_screenshots/*.png
+/prototypes/*.png
+/prototypes/**/
 
 # Ignore other files in this folder
 .vscode/*
