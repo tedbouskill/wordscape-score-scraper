@@ -1,0 +1,82 @@
+<View>
+  <!-- Tournament Status -->
+  <RectangleLabels name="tournament_status" toName="image">
+    <Label value="Tournament Status" background="grey" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="tournament_status_text" toName="image" editable="true" placeholder="Enter oval text"/>
+
+  <!-- Team Rank Numbers (optional) -->
+  <RectangleLabels name="team_rank" toName="image">
+    <Label value="Team Rank Number" background="purple" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="team_rank_text" toName="image" editable="true" placeholder="Enter rank number"/>
+
+  <!-- Player Badge Rank Numbers (1, 2, and 3) -->
+  <RectangleLabels name="badge_rank" toName="image">
+    <Label value="Player Badge Rank Number" background="darkblue" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="badge_rank_text" toName="image" editable="true" maxLength="1" perRegion="true" placeholder="Enter player badge number"/>
+
+  <!-- My Badge Rank Numbers (1, 2, and 3) -->
+  <RectangleLabels name="my_badge_rank" toName="image">
+    <Label value="My Player Badge Rank Number" background="pink" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="my_badge_rank_text" toName="image" editable="true" maxLength="1" perRegion="true" placeholder="Enter my badge number"/>
+
+  <!-- Player Rank Numbers (4 to 50) -->
+  <RectangleLabels name="player_rank_nb" toName="image">
+    <Label value="Player Rank Number" background="darkblue" textColor="white"/>
+  </RectangleLabels>
+  <TextArea name="player_rank_nb_text" toName="image" editable="true" maxLength="2" perRegion="true" placeholder="Enter player rank in circle"/>
+
+  <!-- My Player Rank Numbers (4 to 50) -->
+  <EllipseLabels name="my_player_rank_nb" toName="image">
+    <Label value="My Player Rank Number" background="pink" textColor="white"/>
+  </EllipseLabels>
+  <TextArea name="my_player_rank_nb_text" toName="image" editable="true" maxLength="2" perRegion="true" placeholder="Enter my rank in circle"/>
+
+  <!-- Player Tags -->
+  <RectangleLabels name="player_tag" toName="image">
+    <Label value="Player Tag" background="darkblue"/>
+  </RectangleLabels>
+  <TextArea name="player_tag_text" toName="image" editable="true" placeholder="Enter player tag"/>
+
+  <!-- My Player Tag -->
+  <RectangleLabels name="my_player_tag" toName="image">
+    <Label value="My Player Tag" background="pink"/>
+  </RectangleLabels>
+  <TextArea name="my_player_tag_text" toName="image" editable="true" placeholder="Enter my tag"/>
+
+  <!-- Yellow Stars -->
+  <RectangleLabels name="star" toName="image" showInline="false">
+    <Label value="YellowStar"/>
+  </RectangleLabels>
+
+  <!-- Player Scores -->
+  <RectangleLabels name="score" toName="image">
+    <Label value="Player Score" background="black" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="score_text" toName="image" editable="true" maxLength="5" perRegion="true" placeholder="Enter score"/>
+
+  <!-- Player Scores -->
+  <RectangleLabels name="my_score" toName="image">
+    <Label value="My Player Score" background="pink" textcolor="white"/>
+  </RectangleLabels>
+  <TextArea name="my_score_text" toName="image" editable="true" maxLength="5" perRegion="true" placeholder="Enter score"/>
+
+  <Relations>
+    <Relation fromName="player_tag" toName="score" label="PlayerScore"/>
+    <Relation fromName="my_player_tag" toName="my_score" label="MyPlayerScore"/>
+    <Relation fromName="player_tag" toName="star" label="StarPlayer"/>
+    <Relation fromName="my_player_tag" toName="star" label="StarMyPlayer"/>
+    <Relation fromName="player_tag" toName="player_rank_nb" label="PlayerRank"/>
+    <Relation fromName="my_player_tag" toName="my_player_rank_nb" label="MyRank"/>
+    <Relation fromName="player_tag" toName="badge_rank" label="PlayerBadgeRank"/>
+    <Relation fromName="my_player_tag" toName="my_badge_rank" label="MyPlayerBadgeRank"/>
+    <Relation fromName="stars" toName="score" label="StarPlayerScore"/>
+    <Relation fromName="stars" toName="my_score" label="StarMyScore"/>
+  </Relations>
+
+  <!-- Input Image -->
+  <Image name="image" value="$image"/>
+</View>
