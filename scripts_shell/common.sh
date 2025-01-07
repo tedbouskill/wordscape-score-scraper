@@ -68,6 +68,7 @@ copy_host_file() {
 
     if [ ! -f "$target_path" ]; then
         cp "$host_file" "$target_path"
+        # shellcheck disable=SC2155
         local host_name=$(hostname)
         sed -i '' "s/\[HOST-MAC\]/$host_name/g" "$target_path"
     else
