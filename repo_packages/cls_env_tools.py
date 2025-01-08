@@ -37,7 +37,7 @@ class EnvTools:
         if file_path is None:
             repo_root = EnvTools.find_repo_root()
             if repo_root is None:
-                logging.error("Repository root not found.")
+                logging.critical("Repository root not found.")
                 return None
             file_path = repo_root / json_file
         else:
@@ -45,7 +45,7 @@ class EnvTools:
 
         # Check if the configuration file exists, then load it
         if not os.path.exists(file_path):
-            logging.error(f"Settings file {file_path} not found at {file_path}")
+            logging.debug(f"Settings file {file_path} not found at {file_path}")
             return None
 
         with open(file_path, 'r') as file:
