@@ -45,34 +45,34 @@ def import_scores_from_csv(csv_file, db_file):
 
             # Insert the player into the players table if not already exists
             cursor.execute("""
-            INSERT OR IGNORE INTO players (player_tag, is_active, join_date)
-            VALUES (?, 1, ?)
+            INSERT OR IGNORE INTO players (player_tag, start_date)
+            VALUES (?, ?)
             """, (player_tag, earliest_date))
 
-            # Retrieve the player_id and join_date
-            cursor.execute("SELECT player_id, join_date FROM players WHERE player_tag = ?", (player_tag,))
+            # Retrieve the player_id and start_date
+            cursor.execute("SELECT player_id, start_date FROM players WHERE player_tag = ?", (player_tag,))
             player = cursor.fetchone()  # Fetch one row as a tuple
 
             if player:
-                player_id, current_join_date = player
+                player_id, current_start_date = player
 
                 # Treat empty string as None
-                if not current_join_date:  # Handles both None and ''
-                    print(f"Player {player_tag} has no join_date, setting to {earliest_date}")
-                    update_join_date = True
+                if not current_start_date:  # Handles both None and ''
+                    print(f"Player {player_tag} has no start_date, setting to {earliest_date}")
+                    update_start_date = True
                 else:
-                    # Convert current_join_date to datetime for comparison
-                    current_join_date = datetime.strptime(current_join_date, "%Y-%m-%d")
+                    # Convert current_start_date to datetime for comparison
+                    current_start_date = datetime.strptime(current_start_date, "%Y-%m-%d")
                     earliest_date_dt = datetime.strptime(earliest_date, "%Y-%m-%d")
                     # Compare dates
-                    update_join_date = current_join_date > earliest_date_dt
+                    update_start_date = current_start_date > earliest_date_dt
 
-                # Update the join_date if necessary
-                if update_join_date:
-                    print(f"Updating join_date for player_id {player_id} ({player_tag}) to {earliest_date}")
+                # Update the start_date if necessary
+                if update_start_date:
+                    #print(f"Updating start_date for player_id {player_id} ({player_tag}) to {earliest_date}")
                     cursor.execute("""
                     UPDATE players
-                    SET join_date = ?
+                    SET start_date = ?
                     WHERE player_id = ?
                     """, (earliest_date, player_id))
             else:
@@ -83,10 +83,10 @@ def import_scores_from_csv(csv_file, db_file):
             for i, score in enumerate(scores):
                 if score:  # Skip empty scores
                     weekend_date = weekend_dates[i]
-                    #cursor.execute("""
-                    #INSERT INTO scores (player_id, score, weekend_date)
-                    #VALUES (?, ?, ?)
-                    #""", (player_id, int(score), weekend_date))
+                    cursor.execute("""
+                    INSERT INTO tournament_results (player_id, score, weekend_date)
+                    VALUES (?, ?, ?)
+                    """, (player_id, int(score), weekend_date))
 
     # Commit and close the connection
     connection.commit()
