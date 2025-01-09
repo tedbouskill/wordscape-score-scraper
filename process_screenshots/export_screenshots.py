@@ -15,6 +15,8 @@ def export_png_files_from_album(album_name, subfolder_name):
 
     # Define the destination folder as the specified subfolder
     destination_folder = os.path.join(script_folder, subfolder_name)
+    # Ensure the destination folder exists
+    os.makedirs(destination_folder, exist_ok=True)
 
     # Initialize the PhotosDB
     photosdb = PhotosDB()
@@ -36,9 +38,6 @@ def export_png_files_from_album(album_name, subfolder_name):
 
     # Sort photos by date-time ascending
     png_photos.sort(key=lambda p: p.date)
-
-    # Ensure the destination folder exists
-    os.makedirs(destination_folder, exist_ok=True)
 
     # Group photos by date and export them
     date_counters = {}  # Track counters for each date
@@ -62,19 +61,26 @@ def export_png_files_from_album(album_name, subfolder_name):
 
             # Export the photo and rename it
             exported_files = photo.export(destination_folder, use_photos_export=True)
+
             for exported_file in exported_files:
+
+                if os.exists(destination_path):
+                    print(f"File already exists: {destination_path}")
+                    continue
+
                 # Rename the exported file
                 os.rename(exported_file, destination_path)
 
                 # Set the file dates
                 os.utime(destination_path, (capture_date.timestamp(), capture_date.timestamp()))
 
-            print(f"Exported and renamed to: {new_filename}")
+                print(f"Exported and renamed to: {new_filename}")
+
         except Exception as e:
             print(f"Failed to export {photo.filename}: {e}")
 
 if __name__ == "__main__":
-    # Parameters: album name and subfolder name
-    album_name = "Wordscape Tournament Scores"  # Replace with the album name
-    subfolder_name = "tournament_scores"  # Replace with the desired subfolder name
-    export_png_files_from_album(album_name, subfolder_name)
+
+    export_png_files_from_album("Wordscape Tournament Scores" , "tournament_scores")
+
+    export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
