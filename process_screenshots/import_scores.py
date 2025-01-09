@@ -25,6 +25,8 @@ try:
     from cls_img_tools import ImageTools
     from cls_logging_manager import LoggingManager
     from cls_string_helpers import StringHelpers
+
+    from cls_db_tools import DbRepositorySingleton
 except ImportError as e:
     logging.error(f"Error importing required modules: {e}")
     sys.exit(1)
@@ -70,23 +72,13 @@ def get_weekend_dates(file_date_str: str) -> tuple:
 
     return sunday_date.strftime("%Y-%m-%d"), friday_date.strftime("%Y-%m-%d")
 
-def reset_scores_for_tournament(connection, weekend_date):
-    """
-    Reset all player scores for a given weekend date to 0.
-    """
-    cursor = connection.cursor()
-    cursor.execute("UPDATE tournament_results SET score = 0 WHERE weekend_date = ? AND score IS NULL", (weekend_date,))
-    connection.commit()
-
-    return
-
 def process_image(file_name: str) -> tuple:
+    rank_txt = None
 
     img, new_height = ImageTools.resize_image_opencv(file_name, new_width=1200)
 
     # Crop the state image which will tell us if the tournament is finished or in progress with the time left
     state_img = ImageTools.crop_image_opencv(img, 450, 680, 300, 100)
-
     state_txt = pytesseract.image_to_string(state_img).strip()
 
     # Check if the tournament is finished
@@ -159,120 +151,18 @@ def process_image(file_name: str) -> tuple:
 
     return matches, unmatched_texts, unmatched_scores, rank_txt
 
-def update_player_start_date(connection, player_id, friday_date):
-    """
-    Update the player's start_date in the players table if it's earlier than the existing start_date.
-    """
-    cursor = connection.cursor()
-    cursor.execute("SELECT start_date FROM players WHERE player_id = ?", (player_id,))
-    row = cursor.fetchone()
-    if row:
-        current_start_date = row[0]
-        if current_start_date is None or friday_date < current_start_date:
-            cursor.execute("UPDATE players SET start_date = ? WHERE player_id = ?", (friday_date, player_id))
-    connection.commit()
-
-    return
-
-def insert_weekend_player_score(connection, weekend_date, player_id, score):
-    """
-    Insert extracted data into SQLite database.
-    """
-    cursor = connection.cursor()
-    insert_query = """
-        INSERT OR IGNORE INTO tournament_results (weekend_date, player_id, score)
-        VALUES (?, ?, ?)
-        """
-    cursor.execute(insert_query, (weekend_date, player_id, score))
-    connection.commit()
-
-    return
-
-def save_rankings_to_json(rankings, output_file):
-    """
-    Save extracted rankings to a JSON file grouped by tournament date.
-    """
-    data = {}
-
-    for entry in rankings:
-        weekend_date = entry["weekend_date"]
-        if weekend_date not in data:
-            data[weekend_date] = []
-        data[weekend_date].append({
-            "rank": entry["rank"],
-            "player_id": entry["player_id"],
-            "score": entry["score"]
-        })
-
-    with open(output_file, "w") as f:
-        json.dump(data, f, indent=4)
-
-    return
-
-def get_player_id(connection, player_tag):
-    cursor = connection.cursor()
-    cursor.execute("SELECT player_id FROM players WHERE player_tag = ?", (player_tag,))
-    row = cursor.fetchone()
-    if row:
-        player_id = row[0]
-    else:
-        player_id = None
-
-    return player_id
-
-def get_player_id_create_if_new(connection, player_tag, friday_date):
-
-    player_id = get_player_id(connection, player_tag)
-    if player_id:
-        return player_id
-
-    cursor = connection.cursor()
-    cursor.execute("INSERT INTO players (player_tag, start_date) VALUES (?, ?)", (player_tag, friday_date,))
-    player_id = cursor.lastrowid
-    connection.commit()
-
-    return player_id
-
-def process_player_matches(connection, matches, weekend_date, friday_date):
+def process_player_matches(matches, weekend_date, friday_date):
 
     for player_tag, score in matches:
         logging.info(f"Player: {player_tag}, Score: {score}")
 
-        player_id = get_player_id_create_if_new(connection, player_tag, friday_date)
+        player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
 
-        insert_weekend_player_score(connection, weekend_date, player_id, score)
+        db_repository.insert_weekend_player_score(weekend_date, player_id, score)
 
     return
 
-def update_ranks_for_weekend_date(connection, weekend_date):
-    cursor = connection.cursor()
-
-    # SQL query to update ranks for the specific weekend_date
-    sql = """
-    WITH ranked_results AS (
-        SELECT
-            player_id,
-            RANK() OVER (PARTITION BY weekend_date ORDER BY score DESC) AS calculated_rank
-        FROM
-            tournament_results
-        WHERE
-            weekend_date = ?
-    )
-    UPDATE tournament_results
-    SET rank = (
-        SELECT calculated_rank
-        FROM ranked_results
-        WHERE ranked_results.player_id = tournament_results.player_id
-    )
-    WHERE weekend_date = ?;
-    """
-
-    # Execute the query with the specified date
-    cursor.execute(sql, (weekend_date, weekend_date))
-    connection.commit()
-
-def process_img_files(db_path, images, output_json):
-    connection = sqlite3.connect(db_path)
+def process_img_files(images):
 
     weekend_dates = set()
 
@@ -300,7 +190,7 @@ def process_img_files(db_path, images, output_json):
         image_files_for_weekend = [img for img in images if files_date in img]
 
         # Reset scores for the tournament
-        reset_scores_for_tournament(connection, sunday_date)
+        db_repository.reset_scores_for_tournament(sunday_date)
 
         for image_file in sorted(image_files_for_weekend):
             image_file_name = os.path.basename(image_file)
@@ -310,23 +200,18 @@ def process_img_files(db_path, images, output_json):
             # Process the image
             matches, unmatched_text, unmatched_scores, rank_txt = process_image(image_file)
 
-            # Insert the player scores including creating new players and inserting friday as the join date
-            process_player_matches(connection, matches, sunday_date, friday_date)
+            db_repository.insert_weekend_team_rank(sunday_date, rank_txt)
 
-            player_found_without_score = False
             for text, confidence in unmatched_text:
-                logging.warning(f"Unmatched Text: {text}, Confidence: {confidence}")
-                player_id = get_player_id(connection, text)
+                player_id = db_repository.get_player_id(text)
                 if player_id:
-                    logging.warning(f"Player found without score: {text}")
-                    player_found_without_score = True
+                    logging.info(f"Player ID found in unmatched text: {text}, ID: {player_id}, assigning score: 0")
+                    matches.append((text, 0))
+                else:
+                    logging.warning(f"Unmatched Text: {text}, Confidence: {confidence}")
 
-            # This will skip deleting the file.
-            if player_found_without_score:
-                logging.warning("Player(s) found without score")
-                for player_tag, score in matches:
-                    logging.warning(f"Player: {player_tag}, Score: {score}")
-                continue
+            # Insert the player scores including creating new players and inserting friday as the join date
+            process_player_matches(matches, sunday_date, friday_date)
 
             # This will skip deleting the score
             if (len(unmatched_scores) > 0):
@@ -345,14 +230,14 @@ def process_img_files(db_path, images, output_json):
         # for img_file in sorted(img_files_for_weekend):
 
         # Set the weekend date ranks
-        update_ranks_for_weekend_date(connection, sunday_date)
+        db_repository.update_ranks_for_weekend_date(sunday_date)
 
     # for sunday_date, friday_date, files_date in sorted(weekend_dates): # Sort by weekend date
 
-    connection.close()
+    return
 
 def main():
-    global process_start_time, logger
+    global process_start_time, logger, db_repository
 
     env_config = EnvConfig()
 
@@ -360,13 +245,6 @@ def main():
 
     db_path_config = env_config.merged_config['constants']['db_path']
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
-
-    # Get the script name without the extension
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    #script_folder = os.getcwd()
-    logging.debug(f"Script Folder: {script_dir}")
-    logging.debug(f"Script Name: {script_name}")
 
     images_config = env_config.merged_config['constants']['images_folder']
     images_path = images_config.replace("{script_dir}", script_dir)
@@ -394,10 +272,12 @@ def main():
         img_files_processed = 0
         img_files_with_errors = 0
 
+        db_repository = DbRepositorySingleton(db_path)
+
         img_files = get_img_files(images_path)
         logger.info(f"Processing {len(img_files)} rows . . .")
 
-        results = process_img_files(db_path, img_files, output_json_file)
+        results = process_img_files(img_files)
 
     except Exception as e:
         logging.exception(f"Uncaught exception in Main(): {e}")
@@ -415,5 +295,11 @@ def main():
     print("Script has finished.\n") # This is the last line of the script
 
 if __name__ == "__main__":
-    print("Starting import_scores.py...")
+    global script_name, script_directory
+
+    # Get the script name without the extension
+    script_name = os.path.splitext(os.path.basename(__file__))[0]
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    #script_folder = os.getcwd()
+
     main()
