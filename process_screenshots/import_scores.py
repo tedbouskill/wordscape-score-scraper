@@ -200,7 +200,8 @@ def process_img_files(images):
             # Process the image
             matches, unmatched_text, unmatched_scores, rank_txt = process_image(image_file)
 
-            db_repository.insert_weekend_team_rank(sunday_date, rank_txt)
+            if rank_txt is not None:
+                db_repository.insert_weekend_team_rank(sunday_date, rank_txt)
 
             for text, confidence in unmatched_text:
                 player_id = db_repository.get_player_id(text)
