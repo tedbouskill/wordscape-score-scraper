@@ -7,7 +7,7 @@ class ImageTools:
     @staticmethod
     def resize_image_opencv(image_path: str, new_width: int = 1200) -> np.ndarray:
         # Read the image
-        img = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        img = cv2.imread(image_path)
 
         # Get the original dimensions
         original_height, original_width = img.shape[:2]
