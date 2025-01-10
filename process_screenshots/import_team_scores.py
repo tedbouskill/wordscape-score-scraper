@@ -202,11 +202,8 @@ def main():
     db_path_config = env_config.merged_config['constants']['db_path']
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
 
-    images_config = env_config.merged_config['constants']['images_folder']
+    images_config = env_config.merged_config['constants']['tournament_images_folder']
     images_path = images_config.replace("{script_dir}", script_dir)
-
-    output_json_config = os.path.join(repo_root, env_config.merged_config['constants']['output_json'])
-    output_json_file = output_json_config.replace("{script_dir}", script_dir)
 
     logging_manager = None
 
@@ -221,7 +218,6 @@ def main():
 
         logger.debug(f"Database Path: {db_path}")
         logger.debug(f"Images Folder: {images_path}")
-        logger.debug(f"Output JSON: {output_json_file}")
 
         process_start_time = time.time()  # Capture the start time
 
