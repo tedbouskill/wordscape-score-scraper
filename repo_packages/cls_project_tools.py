@@ -45,3 +45,14 @@ class ProjectTools:
         friday_date = sunday_date - timedelta(days=2)
 
         return sunday_date.strftime("%Y-%m-%d"), friday_date.strftime("%Y-%m-%d")
+
+    @staticmethod
+    def next_sunday(date):
+        """
+        Calculate the next Sunday following a given date.
+        If the date is already a Sunday, it returns the same date.
+        """
+        days_ahead = 6 - date.weekday()  # Sunday is 6
+        if days_ahead < 0:  # Target day already passed in the current week
+            days_ahead += 7
+        return date + timedelta(days=days_ahead)
