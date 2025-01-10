@@ -6,7 +6,8 @@
     },
     "constants": {
         "db_path": "{repo_root}/player_metrics.db",
-        "images_folder": "{script_dir}/tournament_scores",
+        "tournament_images_folder": "{script_dir}/tournament_scores",
+        "team_images_folder": "{script_dir}/weekend_warriors_team",
         "output_json": "{script_dir}/tournament_rankings.json"
     }
 }
