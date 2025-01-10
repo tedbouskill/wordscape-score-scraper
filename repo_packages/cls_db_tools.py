@@ -1,6 +1,8 @@
 import sqlite3
 import threading
 
+from datetime import datetime
+
 class DbRepositorySingleton:
     _instance = None
     _lock = threading.Lock()  # Lock object to ensure thread safety
@@ -66,6 +68,20 @@ class DbRepositorySingleton:
 
         return
 
+    def insert_weekly_player_stats(self, weekend_date, player_id, helps, stars):
+        """
+        Insert extracted data into SQLite database.
+        """
+        cursor = self.connection.cursor()
+        insert_query = """
+            INSERT OR IGNORE INTO weekly_player_stats (weekend_date, player_id, helps, stars)
+            VALUES (?, ?, ?, ?)
+            """
+        cursor.execute(insert_query, (weekend_date, player_id, helps, stars))
+        self.connection.commit()
+
+        return
+
     def get_player_id(self, player_tag):
         cursor = self.connection.cursor()
         cursor.execute("SELECT player_id FROM players WHERE player_tag = ?", (player_tag,))
@@ -90,6 +106,24 @@ class DbRepositorySingleton:
 
         return player_id
 
+    def get_players(self):
+
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT player_id, player_tag, on_team, is_active FROM players WHERE leave_date IS NULL") # Get all players
+        rows = cursor.fetchall()
+        self.connection.commit()
+
+        return rows
+
+    def get_team_members(self):
+
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT player_id, player_tag, is_active FROM players WHERE on_team = 1") # Get all players
+        rows = cursor.fetchall()
+        self.connection.commit()
+
+        return rows
+
     def reset_scores_for_tournament(self, weekend_date):
         """
         Reset all player scores for a given weekend date to 0.
@@ -100,7 +134,53 @@ class DbRepositorySingleton:
 
         return
 
-    def update_player_start_date(self, player_id, friday_date):
+    def set_player_active(self, player_id):
+        """
+        Set a player to active in the players table.
+        """
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE players SET is_active = 1 WHERE player_id = ?", (player_id,))
+        self.connection.commit()
+
+        return
+
+    def set_player_inactive(self, player_id):
+        """
+        Set a player to inactive in the players table.
+        """
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE players SET is_active = 0 WHERE player_id = ?", (player_id,))
+        self.connection.commit()
+
+        return
+
+    def set_player_on_team(self, player_id):
+        """
+        Set a player to on_team in the players table.
+        """
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE players SET on_team = 1, leave_date = NULL WHERE player_id = ?", (player_id,))
+        self.connection.commit()
+
+        return
+
+    def set_player_off_team(self, player_id):
+        """
+        Set a player to not on_team in the players table.
+        """
+        # Get the current date
+        current_date = datetime.now()
+
+        # Format the date as yyyy-mm-dd
+        formatted_date = current_date.strftime('%Y-%m-%d')
+
+        cursor = self.connection.cursor()
+        cursor.execute("UPDATE players SET on_team = 0, leave_date = ? WHERE player_id = ?", (formatted_date, player_id,))
+        self.connection.commit()
+
+        return
+
+    def update_player_start_date(self, player_id, start_date):
         """
         Update the player's start_date in the players table if it's earlier than the existing start_date.
         """
@@ -109,8 +189,8 @@ class DbRepositorySingleton:
         row = cursor.fetchone()
         if row:
             current_start_date = row[0]
-            if current_start_date is None or friday_date < current_start_date:
-                cursor.execute("UPDATE players SET start_date = ? WHERE player_id = ?", (friday_date, player_id))
+            if current_start_date is None or start_date < current_start_date:
+                cursor.execute("UPDATE players SET start_date = ? WHERE player_id = ?", (start_date, player_id))
         self.connection.commit()
 
         return
