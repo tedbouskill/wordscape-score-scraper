@@ -18,69 +18,81 @@ def export_png_files_from_album(album_name, subfolder_name):
     # Ensure the destination folder exists
     os.makedirs(destination_folder, exist_ok=True)
 
-    # Initialize the PhotosDB
-    photosdb = PhotosDB()
+    photosdb = None
 
-    # Get all photos and filter by album name
-    all_photos = photosdb.photos()  # Retrieve photo objects
-    album_photos = [photo for photo in all_photos if album_name in photo.albums]
+    try:
 
-    if not album_photos:
-        print(f"Album '{album_name}' not found or no photos in the album.")
-        return
+        # Initialize the PhotosDB
+        photosdb = PhotosDB()
 
-    # Filter for PNG files in the album
-    png_photos = [photo for photo in album_photos if photo.uti == "public.png"]
+        # Query photos with specific criteria
+        album_photos = photosdb.photos(albums=[album_name])
 
-    if not png_photos:
-        print(f"No PNG files found in album '{album_name}'.")
-        return
+        if not album_photos:
+            print(f"Album '{album_name}' not found or no photos in the album.")
+            return
 
-    # Sort photos by date-time ascending
-    png_photos.sort(key=lambda p: p.date)
+        # Filter for PNG files in the album
+        png_photos = [photo for photo in album_photos if photo.uti == "public.png"]
 
-    # Group photos by date and export them
-    date_counters = {}  # Track counters for each date
-    for photo in png_photos:
-        try:
-            # Get the capture date and Sunday preceding or matching the date
-            capture_date = photo.date
-            sunday_date = get_previous_sunday(capture_date)
-            formatted_date = sunday_date.strftime("%Y-%m-%d")
+        if not png_photos:
+            print(f"No PNG files found in album '{album_name}'.")
+            return
 
-            # Increment the counter for the date
-            if formatted_date not in date_counters:
-                date_counters[formatted_date] = 1
-            else:
-                date_counters[formatted_date] += 1
+        # Sort photos by date-time ascending
+        png_photos.sort(key=lambda p: p.date)
 
-            # Define the new file name with a counter
-            counter = f"-{date_counters[formatted_date]:02d}"
-            new_filename = f"{formatted_date}{counter}.png"
-            destination_path = os.path.join(destination_folder, new_filename)
+        # Group photos by date and export them
+        date_counters = {}  # Track counters for each date
+        for photo in png_photos:
+            try:
+                # Get the capture date and Sunday preceding or matching the date
+                capture_date = photo.date
+                sunday_date = get_previous_sunday(capture_date)
+                formatted_date = sunday_date.strftime("%Y-%m-%d")
 
-            # Export the photo and rename it
-            exported_files = photo.export(destination_folder, use_photos_export=True)
+                # Increment the counter for the date
+                if formatted_date not in date_counters:
+                    date_counters[formatted_date] = 1
+                else:
+                    date_counters[formatted_date] += 1
 
-            for exported_file in exported_files:
+                # Define the new file name with a counter
+                counter = f"-{date_counters[formatted_date]:02d}"
+                new_filename = f"{formatted_date}{counter}.png"
+                destination_path = os.path.join(destination_folder, new_filename)
 
-                if os.exists(destination_path):
-                    print(f"File already exists: {destination_path}")
-                    continue
+                # Export the photo and rename it
+                exported_files = photo.export(destination_folder, use_photos_export=True)
 
-                # Rename the exported file
-                os.rename(exported_file, destination_path)
+                for exported_file in exported_files:
+                    print(f"Exported: {exported_file}")
 
-                # Set the file dates
-                os.utime(destination_path, (capture_date.timestamp(), capture_date.timestamp()))
+                    if os.path.exists(destination_path):
+                        print(f"File already exists: {destination_path}")
+                        os.remove(exported_file)
+                        continue
 
-                print(f"Exported and renamed to: {new_filename}")
+                    # Rename the exported file
+                    os.rename(exported_file, destination_path)
 
-        except Exception as e:
-            print(f"Failed to export {photo.filename}: {e}")
+                    # Set the file dates
+                    os.utime(destination_path, (capture_date.timestamp(), capture_date.timestamp()))
+
+                    print(f"Exported and renamed to: {new_filename}")
+
+            except Exception as e:
+                print(f"Failed to export {photo.filename}: {e}")
+
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        photosdb = None
 
 if __name__ == "__main__":
 
+    print("Exporting PNG files from 'Wordscape Tournament Scores' album...")
     export_png_files_from_album("Wordscape Tournament Scores" , "tournament_scores")
 
+    print("Exporting PNG files from 'Wordscape Team' album...")
     export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
