@@ -1,20 +1,10 @@
-import fnmatch
-import json
 import logging
 import pytesseract
 import os
-import re
-import sqlite3
 import sys
 import time
 
-from calendar import week
-from numpy import insert
-from datetime import datetime, timedelta
-from pathlib import Path
-from PIL import Image, ImageOps
 from requests import get
-from sympy import im
 
 # Set up root logger configuration
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,6 +14,7 @@ try:
     from cls_env_tools import EnvTools
     from cls_img_tools import ImageTools
     from cls_logging_manager import LoggingManager
+    from cls_project_tools import ProjectTools
     from cls_string_helpers import StringHelpers
 
     from cls_db_tools import DbRepositorySingleton
@@ -35,42 +26,6 @@ import easyocr
 
 # Initialize EasyOCR
 reader = easyocr.Reader(['en'])
-
-def get_img_files(directory: str, pattern='.png') -> list:
-
-    path = Path(directory)
-    if (not path.exists()):
-        logging.critical(f"Directory {directory} does not exist")
-        return []
-    files = [str(file) for file in path.rglob('*') if fnmatch.fnmatch(file.suffix.lower(), pattern.lower())]
-
-    return files
-
-def extract_date_from_filename(file_path: str) -> tuple:
-    """
-    Extract the date from the screenshot file's metadata or filename.
-    Assumes the file is named with a yyyy-mm-dd prefix.
-    """
-    try:
-        filename = os.path.basename(file_path)
-        matches = re.match(r"(\d{4}-\d{2}-\d{2})-(\d{2})", filename)
-        date_str = matches.group(1)  # Extract the yyyy-mm-dd prefix
-        series_str = matches.group(2)  # Extract the series number
-        logger.debug(f"Date: {date_str}, Series: {series_str}")
-    except Exception as e:
-        logger.error(f"Error extracting date and series from filename: {e}")
-
-    return date_str, int(series_str)
-
-def get_weekend_dates(file_date_str: str) -> tuple:
-    """
-    Calculate the weekend date (Sunday) and the Friday date for a given tournament date.
-    """
-    tournament_date = datetime.strptime(file_date_str, "%Y-%m-%d")
-    sunday_date = tournament_date + timedelta(days=(6 - tournament_date.weekday()))
-    friday_date = sunday_date - timedelta(days=2)
-
-    return sunday_date.strftime("%Y-%m-%d"), friday_date.strftime("%Y-%m-%d")
 
 def process_image(file_name: str) -> tuple:
     rank_txt = None
@@ -173,10 +128,10 @@ def process_img_files(images):
         if "processed_" in image_file:
             continue
 
-        date_str, series_str = extract_date_from_filename(image_file)
+        date_str, series_str = ProjectTools.extract_date_from_filename(image_file)
 
         # Calculate weekend and Friday dates
-        dates = get_weekend_dates(date_str)
+        dates = ProjectTools.get_weekend_dates(date_str)
 
         weekend_dates.add(dates + (date_str,))
 
@@ -275,7 +230,7 @@ def main():
 
         db_repository = DbRepositorySingleton(db_path)
 
-        img_files = get_img_files(images_path)
+        img_files = ProjectTools.get_img_files(images_path)
         logger.info(f"Processing {len(img_files)} rows . . .")
 
         results = process_img_files(img_files)
