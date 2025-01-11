@@ -45,6 +45,7 @@ def process_image(file_name: str) -> tuple:
         logging.info(f"Team rank: {rank_txt}")
 
     player_results = []
+    unmatched_texts = []
     score_results = []
 
     # Crop the players image and extract the player names and scores
@@ -52,8 +53,13 @@ def process_image(file_name: str) -> tuple:
     players_img = ImageTools.convert_non_white_to_black_opencv(players_img, 200)
     results = reader.readtext(players_img)
     for box, text, confidence in results:
+        player_id = db_repository.get_player_id(text)
         if box[0][0] < 50:
-            player_results.append((box, text, confidence))
+            if player_id is not None:
+                player_results.append((box, text, confidence))
+            else:
+                unmatched_texts.append((text, confidence))
+            continue
 
         if box[0][0] > 650 and StringHelpers.is_all_numeric(text):
             score_results.append((box, text, confidence))
@@ -63,7 +69,6 @@ def process_image(file_name: str) -> tuple:
 
     # Match numeric values with text values based on y-coordinate
     matches = []
-    unmatched_texts = []
     unmatched_scores = []
     for text_box, text, text_confidence in player_results:
         text_y = text_box[0][1]  # y-coordinate of the top-left corner of the text box
@@ -111,7 +116,9 @@ def process_player_matches(matches, weekend_date, friday_date):
     for player_tag, score in matches:
         logging.info(f"Player: {player_tag}, Score: {score}")
 
-        player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
+        # If I can improve the OCR scan of player names, I can uncomment the next line
+        #player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
+        player_id = db_repository.get_player_id(player_tag)
 
         db_repository.insert_weekend_player_score(weekend_date, player_id, score)
 
@@ -169,7 +176,14 @@ def process_img_files(images):
             # Insert the player scores including creating new players and inserting friday as the join date
             process_player_matches(matches, sunday_date, friday_date)
 
-            # This will skip deleting the score
+            # This will skip deleting the file
+            if (len(unmatched_text) > 0):
+                logging.error("Unmatched Texts:")
+                for text, confidence in unmatched_text:
+                    logging.warning(f"Text: {text}, Confidence: {confidence}")
+                continue
+
+            # This will skip deleting the file
             if (len(unmatched_scores) > 0):
                 logging.error("Unmatched Scores:")
                 for score, confidence in unmatched_scores:
@@ -179,7 +193,6 @@ def process_img_files(images):
             # Delete the file if it was processed successfully
             logging.debug(f"Deleting {image_file}")
             os.remove(image_file)
-            #os.rename(image_file, os.path.join(os.path.dirname(image_file), f"processed_{os.path.basename(image_file)}"))
 
             img_files_processed += 1
 
