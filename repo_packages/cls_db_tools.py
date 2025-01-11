@@ -109,7 +109,7 @@ class DbRepositorySingleton:
     def get_players(self):
 
         cursor = self.connection.cursor()
-        cursor.execute("SELECT player_id, player_tag, on_team, is_active FROM players WHERE leave_date IS NULL") # Get all players
+        cursor.execute("SELECT player_id, player_tag, on_team, is_active, leave_date FROM players WHERE leave_date IS NULL") # Get all players
         rows = cursor.fetchall()
         self.connection.commit()
 
