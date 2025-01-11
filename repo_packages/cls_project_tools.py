@@ -36,6 +36,24 @@ class ProjectTools:
         return date_str, int(series_str)
 
     @staticmethod
+    def extract_date_time_from_filename(file_path: str) -> tuple:
+        """
+        Extract the date from the screenshot file's metadata or filename.
+        Assumes the file is named with a yyyy-mm-dd prefix.
+        """
+        try:
+            filename = os.path.basename(file_path)
+            matches = re.match(r"(\d{4}-\d{2}-\d{2})_(\d{2}-\d{2})_(\d{2})", filename)
+            date_str = matches.group(1)  # Extract the yyyy-mm-dd prefix
+            time_str = matches.group(2)  # Extract the time
+            series_str = matches.group(3)  # Extract the series number
+            logging.debug(f"Date: {date_str}, Time: {time_str}, Series: {series_str}")
+        except Exception as e:
+            logging.error(f"Error extracting date and series from filename: {e}")
+
+        return date_str, date_str+"_"+time_str, int(series_str)
+
+    @staticmethod
     def get_weekend_dates(file_date_str: str) -> tuple:
         """
         Calculate the weekend date (Sunday) and the Friday date for a given tournament date.
