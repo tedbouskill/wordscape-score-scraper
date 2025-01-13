@@ -1,7 +1,9 @@
+import logging
 import sqlite3
 import threading
 
 from datetime import datetime
+from venv import logger
 
 class DbRepositorySingleton:
     _instance = None
@@ -40,15 +42,17 @@ class DbRepositorySingleton:
         """
         self.connection.close()
 
-    def insert_weekend_player_score(self, weekend_date, player_id, score):
+    def upsert_weekend_player_score(self, weekend_date, player_id, score):
         """
-        Insert extracted data into SQLite database.
+        Insert or update extracted data into SQLite database.
         """
         cursor = self.connection.cursor()
         insert_query = """
-            INSERT OR IGNORE INTO tournament_results (weekend_date, player_id, score)
+            INSERT INTO tournament_results (weekend_date, player_id, score)
             VALUES (?, ?, ?)
-            """
+            ON CONFLICT(weekend_date, player_id) DO UPDATE SET
+            score = excluded.score
+        """
         cursor.execute(insert_query, (weekend_date, player_id, score))
         self.connection.commit()
 
@@ -68,15 +72,18 @@ class DbRepositorySingleton:
 
         return
 
-    def insert_weekly_player_stats(self, weekend_date, player_id, helps, stars):
+    def upsert_weekly_player_stats(self, weekend_date, player_id, helps, stars):
         """
-        Insert extracted data into SQLite database.
+        Insert or update extracted data into SQLite database.
         """
         cursor = self.connection.cursor()
         insert_query = """
-            INSERT OR IGNORE INTO weekly_player_stats (weekend_date, player_id, helps, stars)
+            INSERT INTO weekly_player_stats (weekend_date, player_id, helps, stars)
             VALUES (?, ?, ?, ?)
-            """
+            ON CONFLICT(weekend_date, player_id) DO UPDATE SET
+            helps = excluded.helps,
+            stars = excluded.stars
+        """
         cursor.execute(insert_query, (weekend_date, player_id, helps, stars))
         self.connection.commit()
 
@@ -179,6 +186,40 @@ class DbRepositorySingleton:
         self.connection.commit()
 
         return
+
+    def set_missing_scores_to_zero_for_weekend(self, weekend_date):
+        """
+        Sets the score to 0 in the tournament_results table for players
+        who are on the team (on_team = 1) but do not have a score for the given weekend_date.
+
+        :param conn: An open SQLite connection.
+        :param weekend_date: The weekend date to filter (YYYY-MM-DD format).
+        """
+        query = """
+        INSERT INTO tournament_results (player_id, weekend_date, score)
+        SELECT p.player_id, ?, 0
+        FROM players p
+        WHERE p.on_team = 1
+        AND NOT EXISTS (
+            SELECT 1
+            FROM tournament_results tr
+            WHERE tr.player_id = p.player_id
+            AND tr.weekend_date = ?
+        );
+        """
+
+        try:
+            # Create a cursor from the connection
+            cursor = self.connection.cursor()
+
+            # Execute the query with the specified weekend_date
+            cursor.execute(query, (weekend_date, weekend_date))
+
+            # Commit the changes
+            self.connection.commit()
+
+        except sqlite3.Error as e:
+            logger.critical(f"An error occurred: {e}")
 
     def update_player_start_date(self, player_id, start_date):
         """
