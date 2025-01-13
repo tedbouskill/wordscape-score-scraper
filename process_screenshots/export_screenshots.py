@@ -108,11 +108,11 @@ def export_png_files_from_album(album_name, subfolder_name):
     except Exception as e:
         print(f"Error: {e}")
     finally:
-        photosdb = None
+        del photosdb
 
 if __name__ == "__main__":
     print("Exporting PNG files from 'Wordscape Tournament Scores' album...")
-    # export_png_files_from_album("Wordscape Tournament Scores", "tournament_scores")
+    export_png_files_from_album("Wordscape Tournament Scores", "tournament_scores")
 
     print("Exporting PNG files from 'Wordscape Team' album...")
     export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
