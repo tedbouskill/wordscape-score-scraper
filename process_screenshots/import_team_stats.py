@@ -1,22 +1,12 @@
-import fnmatch
-import json
 import logging
-from httpx import delete
-import pytesseract
 import os
-import re
-import sqlite3
 import sys
 import time
 
 from calendar import week
 from numpy import insert
-from datetime import datetime, timedelta
-from pathlib import Path
-from PIL import Image, ImageOps
-from requests import get
+from datetime import datetime
 from send2trash import send2trash
-from sympy import im
 
 # Set up root logger configuration
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -27,7 +17,6 @@ try:
     from cls_img_tools import ImageTools
     from cls_logging_manager import LoggingManager
     from cls_project_tools import ProjectTools
-    from cls_string_helpers import StringHelpers
 
     from cls_db_tools import DbRepositorySingleton
 except ImportError as e:
@@ -177,7 +166,7 @@ def process_img_files(images):
                 helps = player_metric[1][0]
                 stars = int(player_metric[1][1].replace(",", ""))
 
-                db_repository.insert_weekly_player_stats(sunday_date, player_id, helps, stars)
+                db_repository.upsert_weekly_player_stats(sunday_date, player_id, helps, stars)
             else:
                 missing_player_stats.add(player)
 
@@ -211,6 +200,7 @@ def main():
 
     images_config = env_config.merged_config['constants']['team_images_folder']
     images_path = images_config.replace("{script_dir}", script_dir)
+    print(f"Images Path: {images_path}")
 
     logging_manager = None
 
