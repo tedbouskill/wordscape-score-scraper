@@ -1,10 +1,11 @@
+from datetime import date
 import logging
 import pytesseract
 import os
 import sys
 import time
 
-from requests import get
+from send2trash import send2trash
 
 # Set up root logger configuration
 #logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -80,7 +81,11 @@ def process_image(file_name: str) -> tuple:
                 matched = True
                 break
         if not matched:
-            unmatched_texts.append((text, text_confidence))
+            player_id = db_repository.get_player_id(text)
+            if player_id:
+                matches.append((text, 0))
+            else:
+                unmatched_texts.append((text, text_confidence))
 
     # Track unmatched scores
     for num_box, num_text, num_confidence in score_results:
@@ -102,12 +107,12 @@ def process_image(file_name: str) -> tuple:
     # Print unmatched text results
     logging.debug("Unmatched Texts:")
     for text, confidence in unmatched_texts:
-        logging.warning(f"Text: {text}, Confidence: {confidence}")
+        logging.debug(f"Text: {text}, Confidence: {confidence}")
 
     # Print unmatched score results
     logging.debug("Unmatched Scores:")
     for score, confidence in unmatched_scores:
-        logging.warning(f"Score: {score}, Confidence: {confidence}")
+        logging.debug(f"Score: {score}, Confidence: {confidence}")
 
     return matches, unmatched_texts, unmatched_scores, rank_txt
 
@@ -120,7 +125,7 @@ def process_player_matches(matches, weekend_date, friday_date):
         #player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
         player_id = db_repository.get_player_id(player_tag)
 
-        db_repository.insert_weekend_player_score(weekend_date, player_id, score)
+        db_repository.upsert_weekend_player_score(weekend_date, player_id, score)
 
     return
 
@@ -132,20 +137,22 @@ def process_img_files(images):
 
     # Get weekend dates from the filenames
     for image_file in images:
-        if "processed_" in image_file:
-            continue
 
-        date_str, series_str = ProjectTools.extract_date_from_filename(image_file)
+        logging.debug(f"Processing {image_file} . . .")
+
+        date_str, file_date, series_str = ProjectTools.extract_date_time_from_filename(image_file)
+
+        logging.debug(f"Date: {date_str}, FileStr: {file_date}, Series: {series_str}")
 
         # Calculate weekend and Friday dates
-        dates = ProjectTools.get_weekend_dates(date_str)
+        sunday_date, friday_date = ProjectTools.get_weekend_dates(date_str)
 
-        weekend_dates.add(dates + (date_str,))
+        weekend_dates.add((sunday_date, file_date, friday_date, date_str))
 
     # for image_file in images:
 
     # Process the images for each sunday weekend date
-    for sunday_date, friday_date, files_date in sorted(weekend_dates): # Sort by weekend date
+    for sunday_date, files_date, friday_date, date_str in sorted(weekend_dates): # Sort by weekend date
         logging.info(f"Processing {sunday_date}...")
 
         # Get the image files for the weekend date
@@ -165,13 +172,18 @@ def process_img_files(images):
             if rank_txt is not None:
                 db_repository.insert_weekend_team_rank(sunday_date, rank_txt)
 
-            for text, confidence in unmatched_text:
-                player_id = db_repository.get_player_id(text)
-                if player_id:
-                    logging.info(f"Player ID found in unmatched text: {text}, ID: {player_id}, assigning score: 0")
-                    matches.append((text, 0))
-                else:
-                    logging.warning(f"Unmatched Text: {text}, Confidence: {confidence}")
+            #remaining_unmatched_text = []
+            #for text, confidence in unmatched_text:
+            #    player_id = db_repository.get_player_id(text)
+            #    if player_id:
+            #        logging.info(f"Player ID found in unmatched text: {text}, ID: {player_id}, assigning score: 0")
+            #        matches.append((text, 0))
+            #    else:
+            #        logging.warning(f"Unmatched Text: {text}, Confidence: {confidence}")
+            #        remaining_unmatched_text.append((text, confidence))
+
+            # Update unmatched_text with the remaining unmatched items
+            #unmatched_text = remaining_unmatched_text
 
             # Insert the player scores including creating new players and inserting friday as the join date
             process_player_matches(matches, sunday_date, friday_date)
@@ -180,7 +192,7 @@ def process_img_files(images):
             if (len(unmatched_text) > 0):
                 logging.error("Unmatched Texts:")
                 for text, confidence in unmatched_text:
-                    logging.warning(f"Text: {text}, Confidence: {confidence}")
+                    logging.warning(f"Couldn't match this text: {text}, Confidence: {confidence}")
                 continue
 
             # This will skip deleting the file
@@ -192,11 +204,14 @@ def process_img_files(images):
 
             # Delete the file if it was processed successfully
             logging.debug(f"Deleting {image_file}")
-            os.remove(image_file)
+            send2trash(image_file)
 
             img_files_processed += 1
 
         # for img_file in sorted(img_files_for_weekend):
+
+        # Set scores to 0 for missing players
+        db_repository.set_missing_scores_to_zero_for_weekend(sunday_date)
 
         # Set the weekend date ranks
         db_repository.update_ranks_for_weekend_date(sunday_date)
