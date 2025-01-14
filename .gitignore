@@ -1,8 +1,8 @@
-/analytics/*.csv
-/process_screenshots/**/
-/process_screenshots/*.png
-/prototypes/*.png
-/prototypes/**/
+/src/analytics/*.csv
+/src/process_screenshots/**/
+/src/process_screenshots/*.png
+/src/prototypes/*.png
+/src/prototypes/**/
 
 # Ignore other files in this folder
 .vscode/*
