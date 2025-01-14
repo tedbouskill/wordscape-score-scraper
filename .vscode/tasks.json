@@ -28,15 +28,15 @@
                 "Setting up Python Subproject..."
             ],
             "windows": {
-                "command": ".\\scripts_shell\\Add-Sub-Project.ps1",
+                "command": ".\\scripts\\shell\\Add-Sub-Project.ps1",
                 "type": "shell"
             },
             "linux": {
-                "command": "./scripts_shell/add_sub_project.sh",
+                "command": "./scripts/shell/add_sub_project.sh",
                 "type": "shell"
             },
             "osx": {
-                "command": "./scripts_shell/add_sub_project.sh",
+                "command": "./scripts/shell/add_sub_project.sh",
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -55,15 +55,15 @@
                 "Setting up Projects..."
             ],
             "windows": {
-                "command": ".\\shell-scripts\\Setup-Python-Projects.ps1",
+                "command": ".\\shell\\scripts\\Setup-Python-Projects.ps1",
                 "type": "shell"
             },
             "linux": {
-                "command": "./scripts_shell/setup_python_projects.sh",
+                "command": "./scripts/shell/setup_python_projects.sh",
                 "type": "shell"
             },
             "osx": {
-                "command": "./scripts_shell/setup_python_projects.sh",
+                "command": "./scripts/shell/setup_python_projects.sh",
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -94,6 +94,33 @@
             },
             "osx": {
                 "command": "./.venv/bin/pip freeze > requirements.txt"
+            }
+        },
+        {
+            "label": "Update TODOs",
+            "type": "shell",
+            "command": "python",
+            "args": ["docs/update_todos.py"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Make Docs",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/shell/update_todos.py"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
             }
         }
     ]
