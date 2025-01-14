@@ -12,12 +12,15 @@
  - SQLite will store the data
  - The website will be published using GitHub Actions to GitHub pages
 
+ ### ToDo List
+
+ For now all ToDo tasks will be recorded in a repository MD file.
+
+ [ToDo Document](./docs/TODO.md)
+
  ## Python Environment
 
  I've used micromamba for this environment because this repository was created on a 2013 Late Model Macbook Pro.
-
-### To rebuild the enviroment YAML file
- micromamba env export -n wordscape-score-scraper > environment.yaml
 
  ## Managing SQLite
 
