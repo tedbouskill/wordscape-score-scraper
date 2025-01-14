@@ -9,5 +9,23 @@
         "tournament_images_folder": "{script_dir}/tournament_scores",
         "team_images_folder": "{script_dir}/weekend_warriors_team",
         "output_json": "{script_dir}/tournament_rankings.json"
+    },
+    "pgConnStrs": {
+        "_comment": "These are the passwords merged in app_keys.json",
+        "supabase":{
+            "postgres" : {
+                "host": "aws-0-ca-central-1.pooler.supabase.com",
+                "port": 6543,
+                "dbname": "postgres",
+                "database": "postgres",
+                "user": "postgres.witgetymyeswcgftmuoo",
+                "password": ""
+            }
+        },
+        "localhost":{
+            "postgres" : {
+                "password": ""
+            }
+        }
     }
 }
