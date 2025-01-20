@@ -24,7 +24,7 @@ if (-Not $workspaceFile) {
 }
 
 # Set up the root project first
-Setup-PythonEnvironment -projectPath "." -isRoot $true
+Initialize-PythonEnvironment -projectPath "." -isRoot $true
 
 # Get the list of project folders
 $projectFolders = (Get-Content $workspaceFile.FullName | ConvertFrom-Json).folders.path

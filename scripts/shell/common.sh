@@ -48,7 +48,7 @@ new_venv() {
 
     # Create a new virtual environment
     echo "Creating a new virtual environment at $venv_path"
-    python3 -m venv "$venv_path"
+    python3.11 -m venv "$venv_path"
 }
 
 copy_host_file() {
