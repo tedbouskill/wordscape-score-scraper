@@ -53,17 +53,34 @@ function New-Venv {
     }
 
     Write-Output "Creating a new virtual environment at $venvPath"
-    python3 -m venv $venvPath
+    python3.11 -m venv $venvPath
 }
 
 function Copy-HostFile {
-    $hostFile = "$repo_root/templates/config.[HOST-PC].json"
+    $hostFile = "$repo_root/templates/config.`[HOST-PC`].json"
     $targetPath = "$repo_root/config.$env:COMPUTERNAME.json"
 
-    if (-Not (Test-Path -Path $targetPath)) {
-        Copy-Item -Path $hostFile -Destination $targetPath
-        $hostName = $env:COMPUTERNAME
-        (Get-Content -Path $targetPath) -replace "\[HOST-PC\]", $hostName | Set-Content -Path $targetPath
+    try {
+        $resolvedHostFile = (Resolve-Path -LiteralPath $hostFile -ErrorAction Stop).Path
+        Write-Output "Resolved host file path: $resolvedHostFile"
+    } catch {
+        Write-Error "Failed to resolve host file path: $hostFile"
+        return
+    }
+
+    if (-Not (Test-Path -LiteralPath $targetPath)) {
+        if (Test-Path -LiteralPath $hostFile) {
+            try {
+                Write-Output "Copying $hostFile to $targetPath"
+                Copy-Item -LiteralPath $hostFile -Destination $targetPath -ErrorAction Stop
+                $hostName = $env:COMPUTERNAME
+                (Get-Content -Path $targetPath) -replace "\[HOST-PC\]", $hostName | Set-Content -Path $targetPath
+            } catch {
+                Write-Error "Failed to copy or modify the host file: $_"
+            }
+        } else {
+            Write-Error "Source host file does not exist: $hostFile"
+        }
     } else {
         Write-Output "Host file already exists at $targetPath"
     }

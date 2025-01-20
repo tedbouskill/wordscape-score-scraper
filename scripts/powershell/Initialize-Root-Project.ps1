@@ -25,7 +25,7 @@ if (-Not $global:SCRIPT_INCLUDED) {
     $global:SCRIPT_INCLUDED = $true
 }
 
-function Create-RootProjectWorkspace {
+function Initialize-RootProjectWorkspace {
     param (
         [string]$repoRoot,
         [string]$repoName,
@@ -45,10 +45,10 @@ function Create-RootProjectWorkspace {
     Find-AndReplace -searchString "\[REPO-NAME\]" -replaceString $repoNameUpper -filePath "$repoRoot/.vscode/launch.json"
 }
 
-Create-RootProjectWorkspace -repoRoot $repoRoot -repoName $repoName -repoNameUpper $repoNameUpper
+Initialize-RootProjectWorkspace -repoRoot $repoRoot -repoName $repoName -repoNameUpper $repoNameUpper
 
 Initialize-PythonEnvironment -projectPath $repoRoot -isRoot $true
 
-Initialize-PythonEnvironment -projectPath "$repoRoot/google-bigquery" -isRoot $false
+#Initialize-PythonEnvironment -projectPath "$repoRoot/google-bigquery" -isRoot $false
 
-Initialize-PythonEnvironment -projectPath "$repoRoot/google-cloud-storage" -isRoot $false
+#Initialize-PythonEnvironment -projectPath "$repoRoot/google-cloud-storage" -isRoot $false
