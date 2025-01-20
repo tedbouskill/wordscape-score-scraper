@@ -48,14 +48,14 @@
             }
         },
         {
-            "label": "Setup All Projects",
+            "label": "Initalize Projects",
             "type": "shell",
             "command": "echo",
             "args": [
                 "Setting up Projects..."
             ],
             "windows": {
-                "command": ".\\shell\\scripts\\Setup-Python-Projects.ps1",
+                "command": ".\\scripts\\powershell\\Initialize-Python-Projects.ps1",
                 "type": "shell"
             },
             "linux": {
