@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Tournament Metrics</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script src="assets/script.js" defer></script>
+</head>
+<body>
+    <h1>Recent Tournament Metrics</h1>
+    <table id="recent-tournaments-table">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        fetch('recent_tournament_metrics.json')
+            .then(response => response.json())
+            .then(data => populateTable('recent-tournaments-table', data));
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Player Metrics</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <script src="assets/script.js" defer></script>
+</head>
+<body>
+    <h1>All Player Metrics</h1>
+    <table id="all-metrics-table">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        fetch('all_player_metrics.json')
+            .then(response => response.json())
+            .then(data => populateTable('all-metrics-table', data));
+    </script>
+</body>
+</html>
