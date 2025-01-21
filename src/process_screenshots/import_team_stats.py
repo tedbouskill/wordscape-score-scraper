@@ -199,7 +199,7 @@ def main():
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
 
     images_config = env_config.merged_config['constants']['team_images_folder']
-    images_path = images_config.replace("{script_dir}", script_dir)
+    images_path = images_config.replace("{repo_root}", str(repo_root))
     print(f"Images Path: {images_path}")
 
     logging_manager = None
