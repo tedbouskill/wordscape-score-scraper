@@ -1,9 +1,19 @@
+import logging
 import os
+import sys
+
 from datetime import datetime, timedelta
 from osxphotos import PhotosDB
 
+try:
+    from cls_env_config import EnvConfigSingleton as EnvConfig
+    from cls_env_tools import EnvTools
+except ImportError as e:
+    logging.error(f"Error importing required modules: {e}")
+    sys.exit(1)
+
 def get_previous_sunday(date):
-    """
+    """f
     Calculate the Sunday preceding or equal to the given date.
     """
     return date - timedelta(days=date.weekday() + 1 if date.weekday() != 6 else 0)
@@ -32,14 +42,12 @@ def group_photos_by_time(photos, time_threshold=300):
 
     return grouped_photos
 
-def export_png_files_from_album(album_name, subfolder_name):
+def export_png_files_from_album(album_name, images_folder):
     # Get the folder where the script is located
     script_folder = os.path.dirname(os.path.abspath(__file__))
 
-    # Define the destination folder as the specified subfolder
-    destination_folder = os.path.join(script_folder, subfolder_name)
     # Ensure the destination folder exists
-    os.makedirs(destination_folder, exist_ok=True)
+    os.makedirs(images_folder, exist_ok=True)
 
     photosdb = None
 
@@ -81,10 +89,10 @@ def export_png_files_from_album(album_name, subfolder_name):
                     # Define the new file name with a counter
                     counter = f"{index:02d}"
                     new_filename = f"{formatted_date}_{counter}.png"
-                    destination_path = os.path.join(destination_folder, new_filename)
+                    destination_path = os.path.join(images_folder, new_filename)
 
                     # Export the photo and rename it
-                    exported_files = photo.export(destination_folder, use_photos_export=True)
+                    exported_files = photo.export(images_folder, use_photos_export=True)
 
                     for exported_file in exported_files:
                         print(f"Exported: {exported_file}")
@@ -110,9 +118,23 @@ def export_png_files_from_album(album_name, subfolder_name):
     finally:
         del photosdb
 
-if __name__ == "__main__":
+def main():
+    env_config = EnvConfig()
+
+    repo_root = EnvTools.find_repo_root()
+
+    images_config = env_config.merged_config['constants']['tournament_images_folder']
+    images_path = images_config.replace("{repo_root}", str(repo_root))
+
     print("Exporting PNG files from 'Wordscape Tournament Scores' album...")
-    export_png_files_from_album("Wordscape Tournament Scores", "tournament_scores")
+    export_png_files_from_album("Wordscape Tournament Scores", images_path)
+
+    images_config = env_config.merged_config['constants']['team_images_folder']
+    images_path = images_config.replace("{repo_root}", str(repo_root))
 
     print("Exporting PNG files from 'Wordscape Team' album...")
     export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
+
+
+if __name__ == "__main__":
+    main()

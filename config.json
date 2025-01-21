@@ -6,9 +6,8 @@
     },
     "constants": {
         "db_path": "{repo_root}/player_metrics.db",
-        "tournament_images_folder": "{script_dir}/tournament_scores",
-        "team_images_folder": "{script_dir}/weekend_warriors_team",
-        "output_json": "{script_dir}/tournament_rankings.json"
+        "tournament_images_folder": "{repo_root}/images/processing/tournament_scores",
+        "team_images_folder": "{repo_root}/images/processing/weekend_warriors_team"
     },
     "pgConnStrs": {
         "_comment": "These are the passwords merged in app_keys.json",

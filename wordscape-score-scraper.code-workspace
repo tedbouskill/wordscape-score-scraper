@@ -3,6 +3,10 @@
     {
       "name": "WORDSCAPE-SCORE-SCRAPER",
       "path": "."
+    },
+    {
+      "name": "MAC-ONLY",
+      "path": "mac-only"
     }
   ],
   "settings": {
