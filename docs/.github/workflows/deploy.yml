@@ -2,8 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # Run the workflow whenever there's a push to the main branch
+    paths:
+      - docs/all_player_metrics.json
+      - docs/recent_tournament_metrics.json  # List specific files here
 
 jobs:
   deploy:
@@ -14,13 +15,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up Node.js (optional, only if you use npm or JavaScript tools)
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-
-    # Step 3: Deploy to GitHub Pages
+    # Step 2: Deploy to GitHub Pages
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
