@@ -5,18 +5,39 @@ import sys
 from datetime import datetime, timedelta
 from osxphotos import PhotosDB
 
+
+# Set up root logger configuration
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Get the script name without the extension
+script_name = os.path.splitext(os.path.basename(__file__))[0]
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
     from cls_env_tools import EnvTools
+    from cls_logging_manager import LoggingManagerSingleton as LoggingManager
 except ImportError as e:
     logging.error(f"Error importing required modules: {e}")
     sys.exit(1)
+
+
+logging_manager = None
+
+try:
+    logging_manager = LoggingManager(script_dir)
+except Exception as e:
+    logging.exception(f"Error initializing LoggingManager: {e}")
+    sys.exit(1)
+
 
 def get_previous_sunday(date):
     """f
     Calculate the Sunday preceding or equal to the given date.
     """
     return date - timedelta(days=date.weekday() + 1 if date.weekday() != 6 else 0)
+
 
 def group_photos_by_time(photos, time_threshold=300):
     """
@@ -42,9 +63,8 @@ def group_photos_by_time(photos, time_threshold=300):
 
     return grouped_photos
 
+
 def export_png_files_from_album(album_name, images_folder):
-    # Get the folder where the script is located
-    script_folder = os.path.dirname(os.path.abspath(__file__))
 
     # Ensure the destination folder exists
     os.makedirs(images_folder, exist_ok=True)
@@ -118,21 +138,25 @@ def export_png_files_from_album(album_name, images_folder):
     finally:
         del photosdb
 
+
 def main():
     env_config = EnvConfig()
+
+    # Set up logging
+    logging_manager.setup_default_logging(script_name, level=logging.INFO, console_level=logging.INFO)
 
     repo_root = EnvTools.find_repo_root()
 
     images_config = env_config.merged_config['constants']['tournament_images_folder']
     images_path = images_config.replace("{repo_root}", str(repo_root))
 
-    print("Exporting PNG files from 'Wordscape Tournament Scores' album...")
+    print("Exporting PNG files from 'Wordscape Tournament Scores' album to {images_path}...")
     export_png_files_from_album("Wordscape Tournament Scores", images_path)
 
     images_config = env_config.merged_config['constants']['team_images_folder']
     images_path = images_config.replace("{repo_root}", str(repo_root))
 
-    print("Exporting PNG files from 'Wordscape Team' album...")
+    print("Exporting PNG files from 'Wordscape Team' album to {images_path}...")
     export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
 
 
