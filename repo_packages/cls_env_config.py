@@ -78,31 +78,24 @@ class EnvConfigSingleton:
     def all_app_keys(self):
         return self.merged_config['keys']
 
-    def get_source_psycopg2_params(self, database):
-        pgSourceKey = self.merged_config['pgServers']['source']
+    def get_source_psycopg2_params(self, server_alias="source", database="postgres"):
+        pgSourceKey = self.merged_config['pgServers'][server_alias]
         pgsql_params = self.merged_config['pgConnStrs'][pgSourceKey][database].copy()
         pgsql_params.pop('database', None)  # Remove 'database' key if it exists
         #pgsql_params['password'] = self.merged_config['pgPwds'][pgSourceKey][database]['password']
         return pgsql_params
 
-    def get_source_asyncpg_params(self, database):
-        pgSourceKey = self.merged_config['pgServers']['source']
+    def get_source_asyncpg_params(self, server_alias="source", database="postgres"):
+        pgSourceKey = self.merged_config['pgServers'][server_alias]
         pgsql_params = self.merged_config['pgConnStrs'][pgSourceKey][database].copy()
         pgsql_params.pop('dbname', None)  # Remove 'database' key if it exists
         #pgsql_params['password'] = self.merged_config['pgPwds'][pgSourceKey][database]['password']
         return pgsql_params
 
-    def get_target_psycopg2_params_dev(self, database):
-        pgTargetKey = self.merged_config['pgServers']['target']
+    def get_target_psycopg2_params(self, server_alias="target", database="postgres"):
+        pgTargetKey = self.merged_config['pgServers'][server_alias]
         if pgTargetKey is None or pgTargetKey == '':
             raise ValueError('No targetPostgresDev key found in config.json')
-        pgsql_params = self.merged_config['pgConnStrs'][pgTargetKey][database].copy()
-        pgsql_params.pop('database', None)
-        #pgsql_params['password'] = self._app_keys['pgPwds'][pgTargetKey][database]['password']
-        return pgsql_params
-
-    def get_target_psycopg2_params_prod(self, database):
-        pgTargetKey = self.merged_config['pgServers']['target']
         pgsql_params = self.merged_config['pgConnStrs'][pgTargetKey][database].copy()
         pgsql_params.pop('database', None)
         #pgsql_params['password'] = self._app_keys['pgPwds'][pgTargetKey][database]['password']

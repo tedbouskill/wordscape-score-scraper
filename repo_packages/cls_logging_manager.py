@@ -39,7 +39,7 @@ class DelayedFileHandler(logging.FileHandler):
             self.stream = self._open()
         super().emit(record)
 
-class LoggingManager:
+class LoggingManagerSingleton:
     _instance = None
     _lock = threading.Lock()  # For thread safety
     _logger = None
@@ -47,7 +47,7 @@ class LoggingManager:
     def __new__(cls, log_dir=None, *args, **kwargs):
         with cls._lock:
             if not cls._instance:
-                cls._instance = super(LoggingManager, cls).__new__(cls, *args, **kwargs)
+                cls._instance = super(LoggingManagerSingleton, cls).__new__(cls, *args, **kwargs)
                 cls._instance._initialized = False
             return cls._instance
 
@@ -220,7 +220,7 @@ def main():
     # The log file will be named 'test_script_default_<current_date>.log' in the 'logs/default' directory
     # The log file will be named 'test_script_api_<current_date>.log' in the 'logs/api_failures' directory
     # The log file will be named 'test_script_query_<current_date>.log' in the 'logs/query_failures' directory
-    logging_manager = LoggingManager(log_dir='.')
+    logging_manager = LoggingManagerSingleton(log_dir='.')
 
     logger = logging_manager.setup_default_logging('test_script')
 

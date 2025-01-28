@@ -8,6 +8,16 @@
             "problemMatcher": []
         },
         {
+            "label": "Update Settings",
+            "type": "shell",
+            "command": "python",
+            "args": ["update_settings.py"],
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"  // Automatically run when the workspace is opened
+            }
+        },
+        {
             "label": "Run AppleScript",
             "type": "shell",
             "command": "osascript",
@@ -21,7 +31,7 @@
             "problemMatcher": []
         },
         {
-            "label": "Add Sub-Project",
+            "label": "Setup Python Projects",
             "type": "shell",
             "command": "echo",
             "args": [
