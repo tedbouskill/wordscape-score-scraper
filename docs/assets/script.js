@@ -62,10 +62,13 @@ function filterTableByName(tableId, filterText) {
     const rows = table.querySelectorAll('tbody tr');
     const filterNames = filterText.toLowerCase().split(',').map(name => name.trim()).filter(name => name);
 
+    console.log('Filter names:', filterNames); // Debugging
+
     rows.forEach(row => {
         const nameCell = row.children[0]; // Assuming the name is in the first column
         const rowText = nameCell.textContent.toLowerCase();
         const isVisible = filterNames.some(name => rowText.includes(name));
+        console.log(`Row text: ${rowText}, isVisible: ${isVisible}`); // Debugging
         row.style.display = isVisible ? '' : 'none';
     });
 }
