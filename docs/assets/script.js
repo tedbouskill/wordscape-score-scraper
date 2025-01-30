@@ -10,11 +10,11 @@ function populateTable(tableId, data) {
     // Add header row
     const headers = Object.keys(data[0]);
     const headerRow = document.createElement('tr');
-    headers.forEach(header => {
+    headers.forEach((header, index) => {
         const th = document.createElement('th');
         th.textContent = header;
         th.addEventListener('click', () => {
-            sortTableByColumn(table, headers.indexOf(header));
+            sortTableByColumn(table, index);
         });
         headerRow.appendChild(th);
     });
@@ -46,4 +46,37 @@ function sortTableByColumn(table, columnIndex) {
 
     table.querySelector('tbody').append(...rows);
     table.setAttribute('data-sort-asc', !isAscending);
+
+    // Update header to show sort direction
+    const headers = table.querySelectorAll('th');
+    headers.forEach((header, index) => {
+        header.textContent = header.textContent.replace(' ▲', '').replace(' ▼', '');
+        if (index === columnIndex) {
+            header.textContent += isAscending ? ' ▲' : ' ▼';
+        }
+    });
 }
+
+function filterTableByName(tableId, filterText) {
+    const table = document.getElementById(tableId);
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const nameCell = row.children[0]; // Assuming the name is in the first column
+        if (nameCell.textContent.toLowerCase().includes(filterText.toLowerCase())) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('all_player_metrics.json')
+        .then(response => response.json())
+        .then(data => populateTable('all-metrics-table', data));
+
+    const filterInput = document.getElementById('filter-input');
+    filterInput.addEventListener('input', () => {
+        filterTableByName('all-metrics-table', filterInput.value);
+    });
+});
