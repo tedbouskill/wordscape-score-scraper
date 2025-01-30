@@ -5,6 +5,8 @@ on:
     paths:
       - docs/all_player_metrics.json
       - docs/recent_tournament_metrics.json  # List specific files here
+      - docs/*.html
+      - docs/assets/**  # List directories here
 
 jobs:
   deploy:
