@@ -60,13 +60,13 @@ function sortTableByColumn(table, columnIndex) {
 function filterTableByName(tableId, filterText) {
     const table = document.getElementById(tableId);
     const rows = table.querySelectorAll('tbody tr');
+    const filterNames = filterText.toLowerCase().split(',').map(name => name.trim());
+
     rows.forEach(row => {
         const nameCell = row.children[0]; // Assuming the name is in the first column
-        if (nameCell.textContent.toLowerCase().includes(filterText.toLowerCase())) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
+        const rowText = nameCell.textContent.toLowerCase();
+        const isVisible = filterNames.some(name => rowText.includes(name));
+        row.style.display = isVisible ? '' : 'none';
     });
 }
 
@@ -84,7 +84,8 @@ function initializeTable(tableId, jsonUrl) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const tableId = document.querySelector('table').id;
-    const jsonUrl = document.querySelector('table').dataset.jsonUrl;
+    const table = document.querySelector('table');
+    const tableId = table.id;
+    const jsonUrl = table.dataset.jsonUrl;
     initializeTable(tableId, jsonUrl);
 });
