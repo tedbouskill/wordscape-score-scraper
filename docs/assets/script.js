@@ -47,9 +47,3 @@ function sortTableByColumn(table, columnIndex) {
     table.querySelector('tbody').append(...rows);
     table.setAttribute('data-sort-asc', !isAscending);
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('all_player_metrics.json')
-        .then(response => response.json())
-        .then(data => populateTable('all-metrics-table', data));
-});
