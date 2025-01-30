@@ -11,14 +11,9 @@
     <h1>All Player Metrics</h1>
     <a href="index.html">Back to Index</a> <!-- Link to the index page -->
     <input type="text" id="filter-input" placeholder="Filter by name">
-    <table id="all-metrics-table" data-sort-asc="true">
+    <table id="all-metrics-table" data-sort-asc="true" data-json-url="all_player_metrics.json">
         <thead></thead>
         <tbody></tbody>
     </table>
-    <script>
-        fetch('all_player_metrics.json')
-            .then(response => response.json())
-            .then(data => populateTable('all-metrics-table', data));
-    </script>
 </body>
 </html>
