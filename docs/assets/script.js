@@ -9,6 +9,9 @@ function populateTable(tableId, data) {
     headers.forEach(header => {
         const th = document.createElement('th');
         th.textContent = header;
+        th.addEventListener('click', () => {
+            sortTableByColumn(table, headers.indexOf(header));
+        });
         headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
@@ -24,3 +27,25 @@ function populateTable(tableId, data) {
         tbody.appendChild(tr);
     });
 }
+
+function sortTableByColumn(table, columnIndex) {
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    const isAscending = table.getAttribute('data-sort-asc') === 'true';
+    const direction = isAscending ? 1 : -1;
+
+    rows.sort((a, b) => {
+        const aText = a.children[columnIndex].textContent.trim();
+        const bText = b.children[columnIndex].textContent.trim();
+
+        return aText > bText ? (1 * direction) : (-1 * direction);
+    });
+
+    table.querySelector('tbody').append(...rows);
+    table.setAttribute('data-sort-asc', !isAscending);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetch('all_player_metrics.json')
+        .then(response => response.json())
+        .then(data => populateTable('all-metrics-table', data));
+});
