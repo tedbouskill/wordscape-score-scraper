@@ -3,6 +3,10 @@ function populateTable(tableId, data) {
     const thead = table.querySelector('thead');
     const tbody = table.querySelector('tbody');
 
+    // Clear existing table content
+    thead.innerHTML = '';
+    tbody.innerHTML = '';
+
     // Add header row
     const headers = Object.keys(data[0]);
     const headerRow = document.createElement('tr');
