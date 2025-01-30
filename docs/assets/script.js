@@ -60,7 +60,7 @@ function sortTableByColumn(table, columnIndex) {
 function filterTableByName(tableId, filterText) {
     const table = document.getElementById(tableId);
     const rows = table.querySelectorAll('tbody tr');
-    const filterNames = filterText.toLowerCase().split(',').map(name => name.trim());
+    const filterNames = filterText.toLowerCase().split(',').map(name => name.trim()).filter(name => name);
 
     rows.forEach(row => {
         const nameCell = row.children[0]; // Assuming the name is in the first column
