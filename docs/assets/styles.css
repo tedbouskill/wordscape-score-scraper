@@ -9,6 +9,13 @@ h1 {
     color: #333;
 }
 
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
