@@ -11,14 +11,9 @@
     <h1>Recent Tournament Metrics</h1>
     <a href="index.html">Back to Index</a> <!-- Link to the index page -->
     <input type="text" id="filter-input" placeholder="Filter by name">
-    <table id="recent-tournaments-table" data-sort-asc="true">
+    <table id="recent-tournaments-table" data-sort-asc="true" data-json-url="recent_tournament_metrics.json">
         <thead></thead>
         <tbody></tbody>
     </table>
-    <script>
-        fetch('recent_tournament_metrics.json')
-            .then(response => response.json())
-            .then(data => populateTable('recent-tournaments-table', data));
-    </script>
 </body>
 </html>

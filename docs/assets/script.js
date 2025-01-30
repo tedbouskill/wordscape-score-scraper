@@ -70,13 +70,21 @@ function filterTableByName(tableId, filterText) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetch('all_player_metrics.json')
+function initializeTable(tableId, jsonUrl) {
+    fetch(jsonUrl)
         .then(response => response.json())
-        .then(data => populateTable('all-metrics-table', data));
+        .then(data => {
+            populateTable(tableId, data);
 
-    const filterInput = document.getElementById('filter-input');
-    filterInput.addEventListener('input', () => {
-        filterTableByName('all-metrics-table', filterInput.value);
-    });
+            const filterInput = document.getElementById('filter-input');
+            filterInput.addEventListener('input', () => {
+                filterTableByName(tableId, filterInput.value);
+            });
+        });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const tableId = document.querySelector('table').id;
+    const jsonUrl = document.querySelector('table').dataset.jsonUrl;
+    initializeTable(tableId, jsonUrl);
 });
