@@ -14,15 +14,19 @@ function isNumeric(value) {
 const TABLE_CONFIGS = {
     'player-metrics-dashboard-table': {
         columnGroups: {
-            'Weekends': ['Weekends Total', 'Weekends Missed','Weekends Played', 'Weekends %'],
+            'Stars': ['Min Stars', 'Avg Stars', 'Max Stars'],
             'Ranks': ['Min Rank', 'Avg Rank', 'Max Rank', '1st Rank', 'Top 3 Rank'],
-            'Stars': ['Min Stars', 'Avg Stars', 'Max Stars']
+            'Weekends': ['Weekends Total', 'Weekends Missed','Weekends Played', 'Weekends %']
         },
         groupBorders: true
     },
-    'tournaments-table': {
-        columnGroups: {},  // No grouping for tournaments table
-        groupBorders: false
+    'recent-tournaments-table': {
+        columnGroups: {
+            'Stars': ['Min Stars', 'Avg Stars', 'Max Stars', 'Recent Stars'],
+            'Ranks': ['Min Rank', 'Avg Rank', 'Max Rank', 'Recent Rank'],
+            'Weekends': ['Weekends Skipped','Weekends Played']
+        },
+        groupBorders: true
     }
 };
 
