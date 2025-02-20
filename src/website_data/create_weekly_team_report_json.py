@@ -61,68 +61,40 @@ def generate_weekend_report(db_path, json_path, weekend_date=None):
     if not weekend_date:
         # Try to use the max weekend_date in the tournament_results table.
         c.execute("SELECT MAX(weekend_date) FROM tournament_results")
-        max_date = c.fetchone()[0]
-        if max_date:
-            weekend_date = max_date
-        else:
-            # Compute last Sunday from today.
-            today = datetime.today()
-            if today.weekday() == 6:  # Sunday
-                last_sunday = today
-            else:
-                last_sunday = today - timedelta(days=today.weekday() + 1)
-            weekend_date = last_sunday.strftime("%Y-%m-%d")
+        weekend_date = c.fetchone()[0]
+
 
     # --- Find the previous weekend date ---
     c.execute(
-        "SELECT MAX(weekend_date) FROM tournament_results WHERE weekend_date < ?",
+        """ SELECT weekend_date, team_score, team_rank, score_rank
+            FROM (
+                SELECT *, RANK() OVER (ORDER BY team_score DESC) AS score_rank
+                FROM team_tournament_results WHERE weekend_date <= ?
+            ) ranked
+            WHERE score_rank <= 2;
+        """,
         (weekend_date,)
     )
-    prev_weekend_row = c.fetchone()
-    prev_weekend = prev_weekend_row[0] if prev_weekend_row and prev_weekend_row[0] else None
+    recent_weekend = c.fetchone()
+    max_weekend = c.fetchone()
+
+    recent_team_score = recent_weekend[1]
+    recent_team_rank = recent_weekend[2]
+
+    max_team_score = max_weekend[1]
+    max_team_score_rank = max_weekend[2] or 0
 
     # --- Compute total player score for the recent tournament ---
     c.execute(
-        "SELECT SUM(score) FROM tournament_results WHERE weekend_date = ?",
+        "SELECT team_score, team_rank FROM team_tournament_results WHERE weekend_date < ? ORDER BY weekend_date DESC LIMIT 1",
         (weekend_date,)
     )
-    recent_total = c.fetchone()[0] or 0
-
-    # --- Compute total player score for the previous tournament (if available) ---
-    previous_total = None
-    if prev_weekend:
-        c.execute(
-            "SELECT SUM(score) FROM tournament_results WHERE weekend_date = ?",
-            (prev_weekend,)
-        )
-        previous_total = c.fetchone()[0] or 0
+    previous_weekend = c.fetchone()
+    previous_team_score = previous_weekend[0]
+    previous_team_rank = previous_weekend[1]
 
     # --- Compute percentage difference relative to the previous tournament ---
-    percent_diff_total = None
-    if previous_total and previous_total != 0:
-        percent_diff_total = round(((recent_total - previous_total) / previous_total * 100), 1)
-
-    # --- Get team tournament results for the recent tournament ---
-    c.execute(
-        "SELECT team_score, team_rank FROM team_tournament_results WHERE weekend_date = ?",
-        (weekend_date,)
-    )
-    team_recent = c.fetchone()
-    team_score_recent = team_recent[0] if team_recent else None
-    team_rank_recent  = team_recent[1] if team_recent else None
-
-    # --- Get team tournament results for the previous tournament ---
-    team_score_previous = None
-    team_rank_previous  = None
-    if prev_weekend:
-        c.execute(
-            "SELECT team_score, team_rank FROM team_tournament_results WHERE weekend_date = ?",
-            (prev_weekend,)
-        )
-        team_prev = c.fetchone()
-        if team_prev:
-            team_score_previous = team_prev[0]
-            team_rank_previous  = team_prev[1]
+    percent_diff_total = round(((recent_team_score - previous_team_score) / previous_team_score * 100), 1)
 
     # --- Get top three players for the recent tournament ---
     # Only include players that are on the team (on_team = 1) and have a nonzero score.
@@ -225,28 +197,27 @@ def generate_weekend_report(db_path, json_path, weekend_date=None):
                 })
 
     # --- Filter and sort the exceeded lists ---
-    def filter_and_sort_exceeded(items, key):
+    def filter_and_sort_exceeded(items, key, percent=10.0):
         # Replace None with 0 and filter out items with percentage <= 10%
         for item in items:
             if item[key] is None:
                 item[key] = 0.0
-        filtered = [item for item in items if item[key] > 10.0]
+        filtered = [item for item in items if item[key] > percent]
         return sorted(filtered, key=lambda x: x[key], reverse=True)
 
     players_exceeded_past_top = filter_and_sort_exceeded(players_exceeded_past_top, "percent_above")
-    players_exceeded_lifetime_avg = filter_and_sort_exceeded(players_exceeded_lifetime_avg, "percent_above_avg")
+    players_exceeded_lifetime_avg = filter_and_sort_exceeded(players_exceeded_lifetime_avg, "percent_above_avg", 50.0)
 
     # --- Assemble the final report ---
     report = {
         "weekend_date": weekend_date,
-        "previous_weekend": prev_weekend,
-        "total_player_score_recent": recent_total,
-        "total_player_score_previous": previous_total,
-        "percent_change_player_score": percent_diff_total,
-        "team_score_recent": team_score_recent,
-        "team_score_previous": team_score_previous,
-        "team_weekend_rank_recent": team_rank_recent,
-        "team_weekend_rank_previous": team_rank_previous,
+        "team_score_recent": recent_team_score,
+        "team_score_recent_rank": recent_team_rank,
+        "team_score_previous": previous_team_score,
+        "team_score_previous_rank": previous_team_rank,
+        "team_score_max": max_team_score,
+        "team_score_max_rank": max_team_score_rank,
+        "percent_change_previous": percent_diff_total,
         "top_three_players": top_three,
         "players_exceeded_past_top": players_exceeded_past_top,
         "players_exceeded_lifetime_avg": players_exceeded_lifetime_avg,

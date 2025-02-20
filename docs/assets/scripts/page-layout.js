@@ -38,6 +38,18 @@ function updateHeaderState() {
     if (currentLink) {
         currentLink.classList.add('text-blue-300', 'font-bold', 'bg-slate-600', 'px-3', 'py-1', 'rounded');
     }
+
+    fetch('last_weekend_report.json')
+      .then(response => response.json())
+      .then(data => {
+        const weekendDateEl = document.getElementById('weekend-date');
+        if (weekendDateEl) {
+          weekendDateEl.textContent = data.weekend_date;
+        } else {
+          console.error('Header element not found.');
+        }
+      })
+      .catch(error => console.error('Error fetching report:', error));
 }
 
 function getCurrentPage() {
