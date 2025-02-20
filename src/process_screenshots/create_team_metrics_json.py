@@ -23,22 +23,24 @@ def create_json_files():
     json_folder = os.path.join(env_tools.find_repo_root(),'docs')
 
     # First Query: All Player Metrics
-    query1 = """SELECT * FROM player_all_metrics;"""
+    query1 = """SELECT * FROM player_metrics_dashboard;"""
     cursor1 = conn.cursor()
     cursor1.execute(query1)
     columns1 = [desc[0] for desc in cursor1.description]
     data1 = [dict(zip(columns1, row)) for row in cursor1.fetchall()]
-    json_path = os.path.join(json_folder, 'all_player_metrics.json')
+
+    json_path = os.path.join(json_folder, 'player_metrics_dashboard.json')
     with open(json_path, 'w') as f:
         json.dump(data1, f, indent=4)
 
     # Second Query: Recent Tournament Metrics
-    query2 = """SELECT * FROM team_players_last_three_months;"""
+    query2 = """SELECT * FROM recent_tournaments_dashboard;"""
     cursor2 = conn.cursor()
     cursor2.execute(query2)
     columns2 = [desc[0] for desc in cursor2.description]
     data2 = [dict(zip(columns2, row)) for row in cursor2.fetchall()]
-    json_path = os.path.join(json_folder, 'recent_tournament_metrics.json')
+
+    json_path = os.path.join(json_folder, 'recent_tournaments_dashboard.json')
     with open(json_path, 'w') as f:
         json.dump(data2, f, indent=4)
 

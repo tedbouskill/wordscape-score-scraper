@@ -157,7 +157,7 @@ def main():
     images_path = images_config.replace("{repo_root}", str(repo_root))
 
     print("Exporting PNG files from 'Wordscape Team' album to {images_path}...")
-    export_png_files_from_album("Wordscape Team", "weekend_warriors_team")
+    export_png_files_from_album("Wordscape Team", images_path)
 
 
 if __name__ == "__main__":
