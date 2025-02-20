@@ -5,6 +5,16 @@ import threading
 from datetime import datetime
 from venv import logger
 
+def validate_and_format_date(date_str):
+    """
+    Validate and format the date to yyyy-mm-dd.
+    """
+    try:
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        return date_obj.strftime('%Y-%m-%d')
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_str}. Expected format: yyyy-mm-dd")
+
 class DbRepositorySingleton:
     _instance = None
     _lock = threading.Lock()  # Lock object to ensure thread safety
@@ -46,6 +56,7 @@ class DbRepositorySingleton:
         """
         Insert or update extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO tournament_results (weekend_date, player_id, score)
@@ -62,6 +73,7 @@ class DbRepositorySingleton:
         """
         Insert extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT OR IGNORE INTO team_tournament_results (weekend_date, rank)
@@ -76,6 +88,7 @@ class DbRepositorySingleton:
         """
         Insert or update extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO weekly_player_stats (weekend_date, player_id, helps, stars)
@@ -106,6 +119,7 @@ class DbRepositorySingleton:
         if player_id:
             return player_id
 
+        friday_date = validate_and_format_date(friday_date)
         cursor = self.connection.cursor()
         cursor.execute("INSERT INTO players (player_tag, start_date) VALUES (?, ?)", (player_tag, friday_date,))
         player_id = cursor.lastrowid
@@ -195,6 +209,7 @@ class DbRepositorySingleton:
         :param conn: An open SQLite connection.
         :param weekend_date: The weekend date to filter (YYYY-MM-DD format).
         """
+        weekend_date = validate_and_format_date(weekend_date)
         query = """
         INSERT INTO tournament_results (player_id, weekend_date, score)
         SELECT p.player_id, ?, 0
@@ -225,6 +240,7 @@ class DbRepositorySingleton:
         """
         Update the player's start_date in the players table if it's earlier than the existing start_date.
         """
+        start_date = validate_and_format_date(start_date)
         cursor = self.connection.cursor()
         cursor.execute("SELECT start_date FROM players WHERE player_id = ?", (player_id,))
         row = cursor.fetchone()
@@ -237,8 +253,8 @@ class DbRepositorySingleton:
         return
 
     def update_ranks_for_weekend_date(self, weekend_date):
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
-
         # SQL query to update ranks for the specific weekend_date
         sql = """
         WITH ranked_results AS (
