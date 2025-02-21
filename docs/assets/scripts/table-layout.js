@@ -148,7 +148,7 @@ function createGroupedTable(table, thead, tbody, data, regularHeaders, config) {
 
                 if (header.includes('Stars')) {
                     td.className = 'text-right pr-4';
-                } else if (isNumeric(td.textContent)) {
+                } else if (isNumeric(row[header])) {
                     td.className = 'text-center';
                 }
 
