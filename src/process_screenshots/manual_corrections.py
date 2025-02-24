@@ -20,7 +20,7 @@ try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
     from cls_env_tools import EnvTools
     from cls_img_tools import ImageTools
-    from cls_logging_manager import LoggingManager
+    from cls_logging_manager import LoggingManagerSingleton as LoggingManager
     from cls_string_helpers import StringHelpers
 
     from cls_db_tools import DbRepositorySingleton
@@ -32,22 +32,22 @@ except ImportError as e:
 weekend_data = {}
 
 # Adding a weekend date
-weekend_date = "2024-10-27"
+weekend_date = "2025-02-23"
 if weekend_date not in weekend_data:
     weekend_data[weekend_date] = set()  # Create an empty set for the weekend date
 
 #weekend_data[weekend_date].add(("Nirazz", 94))
-weekend_data[weekend_date].add(("trrr", 22))
-weekend_data[weekend_date].add(("Punches616", 0))
+#weekend_data[weekend_date].add(("trrr", 22))
+#weekend_data[weekend_date].add(("Punches616", 0))
 #weekend_data[weekend_date].add(("vfo", 78))
 #weekend_data[weekend_date].add(("justme", 43))
 #weekend_data[weekend_date].add(("cariann", 0))
-weekend_data[weekend_date].add(("jon", 0))
+#weekend_data[weekend_date].add(("jon", 0))
 #weekend_data[weekend_date].add(("Da'man", 57))
-weekend_data[weekend_date].add(("val", 0))
+#weekend_data[weekend_date].add(("val", 0))
 #weekend_data[weekend_date].add(("Hobbes", 0))
-weekend_data[weekend_date].add(("Stormy", 0))
-weekend_data[weekend_date].add(("Elen", 0))
+#weekend_data[weekend_date].add(("Stormy", 0))
+weekend_data[weekend_date].add(("fin", 3145))
 
 def get_weekend_dates(file_date_str: str) -> tuple:
     """
@@ -73,7 +73,7 @@ def process_manual_corrections():
                 db_repository.update_player_start_date(player_tag, friday_date)
 
             print(f"Insert Player ID: {player_id}, Score: {score} for weekend date: {weekend_date}")
-            db_repository.insert_weekend_player_score(sunday_date, player_id, score)
+            db_repository.upsert_weekend_player_score(sunday_date, player_id, score)
 
         print(f"Updating scores for weekend date: {sunday_date}")
         db_repository.update_ranks_for_weekend_date(sunday_date)
