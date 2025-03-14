@@ -150,13 +150,13 @@ def main():
     images_config = env_config.merged_config['constants']['tournament_images_folder']
     images_path = images_config.replace("{repo_root}", str(repo_root))
 
-    print("Exporting PNG files from 'Wordscape Tournament Scores' album to {images_path}...")
+    print(f"Exporting PNG files from 'Wordscape Tournament Scores' album to {images_path}...")
     export_png_files_from_album("Wordscape Tournament Scores", images_path)
 
     images_config = env_config.merged_config['constants']['team_images_folder']
     images_path = images_config.replace("{repo_root}", str(repo_root))
 
-    print("Exporting PNG files from 'Wordscape Team' album to {images_path}...")
+    print(f"Exporting PNG files from 'Wordscape Team' album to {images_path}...")
     export_png_files_from_album("Wordscape Team", images_path)
 
 
