@@ -15,7 +15,7 @@ try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
     from cls_env_tools import EnvTools
     from cls_img_tools import ImageTools
-    from cls_logging_manager import LoggingManager
+    from cls_logging_manager import LoggingManagerSingleton as LoggingManager
     from cls_project_tools import ProjectTools
 
     from cls_db_tools import DbRepositorySingleton
@@ -115,11 +115,11 @@ def process_img_files(images):
     # for image_file in images:
 
     for file_str, date_str in sorted(file_groups):
-        logging.debug(f"File: {file_str}, Date: {date_str}")
-
-        print(f"Processing {file_str} . . .")
+        print(f"Processing {file_str} . . . for {date_str}")
 
         sunday_date = ProjectTools.next_sunday(datetime.strptime(date_str, "%Y-%m-%d"))
+
+        logging.debug(f"Sunday Date: {sunday_date}")
 
         # Get the image files for the weekend date
         image_files_group = [img for img in images if file_str in img]
@@ -174,7 +174,7 @@ def process_img_files(images):
 
         # If there are missing players from the OCR results, they are not on the team
         for missing_player in missing_player_stats:
-            player_tag = missing_player['player_tag']
+            player_tag = missing_player[1]  # Access player_tag using index 1
             unmatched = unmatched_metrics.get(player_tag)
             if unmatched:
                 logging.warning(f"Player: {player_tag}, Unmatched: {unmatched}")
@@ -199,7 +199,7 @@ def main():
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
 
     images_config = env_config.merged_config['constants']['team_images_folder']
-    images_path = images_config.replace("{script_dir}", script_dir)
+    images_path = images_config.replace("{repo_root}", str(repo_root))
     print(f"Images Path: {images_path}")
 
     logging_manager = None
@@ -229,7 +229,6 @@ def main():
         results = process_img_files(img_files)
 
     except Exception as e:
-        logging.exception(f"Uncaught exception in Main(): {e}")
         logger.exception(f"Uncaught exception in Main(): {e}")
     finally:
         end_time = time.time()

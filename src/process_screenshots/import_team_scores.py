@@ -14,7 +14,7 @@ try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
     from cls_env_tools import EnvTools
     from cls_img_tools import ImageTools
-    from cls_logging_manager import LoggingManager
+    from cls_logging_manager import LoggingManagerSingleton as LoggingManager
     from cls_project_tools import ProjectTools
     from cls_string_helpers import StringHelpers
 
@@ -93,7 +93,7 @@ def process_image(file_name: str) -> tuple:
         matched = False
         for text_box, text, text_confidence in player_results:
             text_y = text_box[0][1]  # y-coordinate of the top-left corner of the text box
-            if 0 < abs(num_y - text_y) < 100:
+            if 0 <= abs(num_y - text_y) < 100:
                 matched = True
                 break
         if not matched:
@@ -231,7 +231,7 @@ def main():
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
 
     images_config = env_config.merged_config['constants']['tournament_images_folder']
-    images_path = images_config.replace("{script_dir}", script_dir)
+    images_path = images_config.replace("{repo_root}", str(repo_root))
 
     logging_manager = None
 

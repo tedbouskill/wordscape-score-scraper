@@ -13,7 +13,7 @@ set -e  # Exit immediately if a command exits with a non-zero status
 script_dir="$(dirname "${BASH_SOURCE[0]}")"
 
 repo_root=""
-repo_name=""
+#repo_name=""
 repo_name_upper=""
 
 # Check if the script is already sourced
