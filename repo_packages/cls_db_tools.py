@@ -5,6 +5,16 @@ import threading
 from datetime import datetime
 from venv import logger
 
+def validate_and_format_date(date_str):
+    """
+    Validate and format the date to yyyy-mm-dd.
+    """
+    try:
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        return date_obj.strftime('%Y-%m-%d')
+    except ValueError:
+        raise ValueError(f"Invalid date format: {date_str}. Expected format: yyyy-mm-dd")
+
 class DbRepositorySingleton:
     _instance = None
     _lock = threading.Lock()  # Lock object to ensure thread safety
@@ -46,6 +56,7 @@ class DbRepositorySingleton:
         """
         Insert or update extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO tournament_results (weekend_date, player_id, score)
@@ -62,9 +73,10 @@ class DbRepositorySingleton:
         """
         Insert extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
-            INSERT OR IGNORE INTO team_tournament_results (weekend_date, rank)
+            INSERT OR IGNORE INTO team_tournament_results (weekend_date, team_rank)
             VALUES (?, ?)
             """
         cursor.execute(insert_query, (weekend_date, rank))
@@ -76,6 +88,7 @@ class DbRepositorySingleton:
         """
         Insert or update extracted data into SQLite database.
         """
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO weekly_player_stats (weekend_date, player_id, helps, stars)
@@ -91,7 +104,7 @@ class DbRepositorySingleton:
 
     def get_player_id(self, player_tag):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT player_id FROM players WHERE player_tag = ?", (player_tag,))
+        cursor.execute("SELECT id FROM players WHERE player_tag = ?", (player_tag,))
         row = cursor.fetchone()
         if row:
             player_id = row[0]
@@ -106,6 +119,7 @@ class DbRepositorySingleton:
         if player_id:
             return player_id
 
+        friday_date = validate_and_format_date(friday_date)
         cursor = self.connection.cursor()
         cursor.execute("INSERT INTO players (player_tag, start_date) VALUES (?, ?)", (player_tag, friday_date,))
         player_id = cursor.lastrowid
@@ -116,7 +130,7 @@ class DbRepositorySingleton:
     def get_players(self):
 
         cursor = self.connection.cursor()
-        cursor.execute("SELECT player_id, player_tag, on_team, is_active, leave_date FROM players WHERE leave_date IS NULL") # Get all players
+        cursor.execute("SELECT id AS player_id, player_tag, on_team, is_active, leave_date FROM players WHERE leave_date IS NULL") # Get all players
         rows = cursor.fetchall()
         self.connection.commit()
 
@@ -125,7 +139,7 @@ class DbRepositorySingleton:
     def get_team_members(self):
 
         cursor = self.connection.cursor()
-        cursor.execute("SELECT player_id, player_tag, is_active FROM players WHERE on_team = 1") # Get all players
+        cursor.execute("SELECT id AS player_id, player_tag, is_active FROM players WHERE on_team = 1") # Get all players
         rows = cursor.fetchall()
         self.connection.commit()
 
@@ -146,7 +160,7 @@ class DbRepositorySingleton:
         Set a player to active in the players table.
         """
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE players SET is_active = 1 WHERE player_id = ?", (player_id,))
+        cursor.execute("UPDATE players SET is_active = 1 WHERE id = ?", (player_id,))
         self.connection.commit()
 
         return
@@ -156,7 +170,7 @@ class DbRepositorySingleton:
         Set a player to inactive in the players table.
         """
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE players SET is_active = 0 WHERE player_id = ?", (player_id,))
+        cursor.execute("UPDATE players SET is_active = 0 WHERE id = ?", (player_id,))
         self.connection.commit()
 
         return
@@ -166,7 +180,7 @@ class DbRepositorySingleton:
         Set a player to on_team in the players table.
         """
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE players SET on_team = 1, leave_date = NULL WHERE player_id = ?", (player_id,))
+        cursor.execute("UPDATE players SET on_team = 1, leave_date = NULL WHERE id = ?", (player_id,))
         self.connection.commit()
 
         return
@@ -182,7 +196,7 @@ class DbRepositorySingleton:
         formatted_date = current_date.strftime('%Y-%m-%d')
 
         cursor = self.connection.cursor()
-        cursor.execute("UPDATE players SET on_team = 0, leave_date = ? WHERE player_id = ?", (formatted_date, player_id,))
+        cursor.execute("UPDATE players SET on_team = 0, leave_date = ? WHERE id = ?", (formatted_date, player_id,))
         self.connection.commit()
 
         return
@@ -195,16 +209,17 @@ class DbRepositorySingleton:
         :param conn: An open SQLite connection.
         :param weekend_date: The weekend date to filter (YYYY-MM-DD format).
         """
+        weekend_date = validate_and_format_date(weekend_date)
         query = """
         INSERT INTO tournament_results (player_id, weekend_date, score)
-        SELECT p.player_id, ?, 0
+        SELECT p.id, ?, 0
         FROM players p
         WHERE p.on_team = 1
         AND NOT EXISTS (
             SELECT 1
             FROM tournament_results tr
-            WHERE tr.player_id = p.player_id
-            AND tr.weekend_date = ?
+            WHERE tr.player_id = p.id
+            AND tr.weekend_date = ? AND p.start_date <= ?
         );
         """
 
@@ -213,7 +228,7 @@ class DbRepositorySingleton:
             cursor = self.connection.cursor()
 
             # Execute the query with the specified weekend_date
-            cursor.execute(query, (weekend_date, weekend_date))
+            cursor.execute(query, (weekend_date, weekend_date, weekend_date))
 
             # Commit the changes
             self.connection.commit()
@@ -225,20 +240,21 @@ class DbRepositorySingleton:
         """
         Update the player's start_date in the players table if it's earlier than the existing start_date.
         """
+        start_date = validate_and_format_date(start_date)
         cursor = self.connection.cursor()
-        cursor.execute("SELECT start_date FROM players WHERE player_id = ?", (player_id,))
+        cursor.execute("SELECT start_date FROM players WHERE id = ?", (player_id,))
         row = cursor.fetchone()
         if row:
             current_start_date = row[0]
             if current_start_date is None or start_date < current_start_date:
-                cursor.execute("UPDATE players SET start_date = ? WHERE player_id = ?", (start_date, player_id))
+                cursor.execute("UPDATE players SET start_date = ? WHERE id = ?", (start_date, player_id))
         self.connection.commit()
 
         return
 
     def update_ranks_for_weekend_date(self, weekend_date):
+        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
-
         # SQL query to update ranks for the specific weekend_date
         sql = """
         WITH ranked_results AS (

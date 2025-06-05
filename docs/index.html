@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordscape Hobbes Warriors Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/common.css">
+    <script src="assets/scripts/page-layout.js"></script>
+</head>
+
+<body>
+    <!-- Include header -->
+    <div id="header"></div>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Welcome to the home of the Wordscapes Team <b>Hobbes
+                    Warriors</b></h2>
+
+            <p>This team used to be called <b>Weekend Warriors</b> and was managed by our beloved leader Hobbes who has
+                been busy with life and hasn't been active on the team. His name remains as a tribute.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div id="top-players" class="text-lg font-medium p-4"></div>
+                    <div id="summary" class="text-me font-medium p-4"></div>
+                </div>
+                <div class="rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div id="newest-high-scores" class="text-lg font-medium p-4"></div>
+                </div>
+                <div class="rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <div id="way-above-average" class="text-lg font-medium p-4"></div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tournaments Card -->
+                <div class="bg-purple-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <h3 class="text-xl font-semibold text-purple-900 mb-3">Recent Tournaments</h3>
+                    <p class="text-gray-600 mb-4">Check the tournament results and rankings for the last three months.
+                    </p>
+                    <a href="recent-tournaments-dashboard.html"
+                        class="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">
+                        Recent Tournaments
+                    </a>
+                </div>
+
+                <!-- Metrics Card -->
+                <div class="bg-blue-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Player Metrics</h3>
+                    <p class="text-gray-600 mb-4">View a dashboard of player metrics while on the team.</p>
+                    <a href="player-metrics-dashboard.html"
+                        class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Player Metrics
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Include footer -->
+    <div id="footer"></div>
+
+    <script>
+        fetch('last_weekend_report.json')
+            .then(response => response.json())
+            .then(data => {
+                const highScores = data.players_exceeded_past_top;
+
+                let html = `<h3 class="text-xl font-bold mb-4">Newest High Scores</h3>`;
+
+                if (!highScores || highScores.length === 0) {
+                    html += `<p>No new high scores.</p>`;
+                } else {
+                    html += `<table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b">
+                <th class="text-left px-4 py-2"></th>
+                <th class="text-center px-4 py-2">Rank</th>
+                <th class="text-right text-lg px-4 py-2">⭐</th>
+                <th class="text-right px-4 py-2">🕰️</th>
+                <th class="text-center px-4 py-2">⬆️</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+                    highScores.forEach(player => {
+                        html += `<tr class="border-b">
+              <td class="text-left px-4 py-2">${player.player_tag}</td>
+              <td class="text-center px-4 py-2">${player.weekend_rank}</td>
+              <td class="text-right px-4 py-2">${player.recent_score.toLocaleString()}</td>
+              <td class="text-right px-4 py-2">${player.past_top_score.toLocaleString()}</td>
+              <td class="text-center px-4 py-2">${player.percent_above}%</td>
+            </tr>`;
+                    });
+
+                    html += `</tbody></table>`;
+                }
+
+                document.getElementById('newest-high-scores').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching high scores:', error);
+            });
+    </script>
+
+    <script>
+        fetch('last_weekend_report.json')
+            .then(response => response.json())
+            .then(data => {
+                const aboveAvgPlayers = data.players_exceeded_lifetime_avg;
+
+                let html = `<h3 class="text-xl font-bold mb-4">Way Above Average! 🚀</h3>`;
+
+                if (!aboveAvgPlayers || aboveAvgPlayers.length === 0) {
+                    html += `<p>No players exceeded their lifetime average.</p>`;
+                } else {
+                    html += `<table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b">
+                <th class="text-left px-4 py-2">Player</th>
+                <th class="text-center px-4 py-2">Rank</th>
+                <th class="text-right px-4 py-2">⭐</th>
+                <th class="text-right px-4 py-2">Avg 📈</th>
+                <th class="text-center px-4 py-2">⬆️</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+                    aboveAvgPlayers.forEach(player => {
+                        html += `<tr class="border-b">
+              <td class="text-left px-4 py-2">${player.player_tag}</td>
+              <td class="text-center px-4 py-2">${player.weekend_rank}</td>
+              <td class="text-right px-4 py-2">${player.recent_score.toLocaleString()}</td>
+              <td class="text-right px-4 py-2">${player.lifetime_avg.toLocaleString()}</td>
+              <td class="text-center px-4 py-2">${player.percent_above_avg}%</td>
+            </tr>`;
+                    });
+
+                    html += `</tbody></table>`;
+                }
+
+                document.getElementById('way-above-average').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching players_exceeded_lifetime_avg:', error);
+            });
+    </script>
+
+    <script src="assets/scripts/tournament-highlights.js"></script>
+
+</body>
+
+</html>

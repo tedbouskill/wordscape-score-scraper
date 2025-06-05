@@ -1,0 +1,49 @@
+#player-metrics-dashboard-table th,
+#player-metrics-dashboard-table td {
+    padding: 0.75rem;
+}
+
+#player-metrics-dashboard-table .group-header th {
+    text-align: center;
+    background-color: #f3f4f6;
+}
+
+#player-metrics-dashboard-table .column-header th {
+    background-color: #f9fafb;
+    text-align: center;  /* Center by default */
+    padding: 0.5rem;
+}
+
+/* Right align headers for score and rank columns */
+#player-metrics-dashboard-table .column-header th[class*="border"] {
+    text-align: right;
+    padding: 0.5rem;
+}
+
+#player-metrics-dashboard-table td.text-left {
+    text-align: left;
+}
+
+#player-metrics-dashboard-table td.text-center {
+    text-align: center;
+}
+
+#player-metrics-dashboard-table td.text-right {
+    text-align: right;
+}
+
+#player-metrics-dashboard-table td.pl-4 {
+    padding-left: 0.5rem;
+}
+
+#player-metrics-dashboard-table td.pr-4 {
+    padding-right: 0.5rem;
+}
+
+#player-metrics-dashboard-table th:not([colspan]) {
+    cursor: pointer;
+}
+
+#player-metrics-dashboard-table th:not([colspan]):hover {
+    background-color: #e5e7eb;
+}

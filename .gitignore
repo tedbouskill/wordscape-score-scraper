@@ -1,6 +1,6 @@
 /src/analytics/*.csv
-/src/process_screenshots/**/
-/src/process_screenshots/*.png
+/images/processing/**/
+/images/processing/*.png
 /src/prototypes/*.png
 /src/prototypes/**/
 

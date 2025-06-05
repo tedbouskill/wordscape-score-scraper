@@ -73,4 +73,5 @@ class ProjectTools:
         days_ahead = 6 - date.weekday()  # Sunday is 6
         if days_ahead < 0:  # Target day already passed in the current week
             days_ahead += 7
-        return date + timedelta(days=days_ahead)
+        next_sunday_date = date + timedelta(days=days_ahead)
+        return next_sunday_date.strftime('%Y-%m-%d')

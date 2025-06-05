@@ -1,0 +1,146 @@
+{
+  "weekend_date": "2025-03-09",
+  "team_score_recent": 80775,
+  "team_score_recent_rank": "#3",
+  "team_score_previous": 80775,
+  "team_score_previous_rank": "#3",
+  "team_score_max": 79575,
+  "team_score_max_rank": "#1",
+  "percent_change_previous": 0.0,
+  "top_three_players": [
+    {
+      "player_id": 49,
+      "recent_score": 7465,
+      "weekend_rank": 1,
+      "player_tag": "weeminx"
+    },
+    {
+      "player_id": 36,
+      "recent_score": 6699,
+      "weekend_rank": 2,
+      "player_tag": "Siley"
+    },
+    {
+      "player_id": 10,
+      "recent_score": 4675,
+      "weekend_rank": 3,
+      "player_tag": "Dewey"
+    }
+  ],
+  "players_exceeded_past_top": [
+    {
+      "player_id": 25,
+      "player_tag": "Laura",
+      "weekend_rank": 12,
+      "recent_score": 2635,
+      "past_top_score": 2017,
+      "percent_above": 30.6
+    },
+    {
+      "player_id": 32,
+      "player_tag": "nvk",
+      "weekend_rank": 26,
+      "recent_score": 1032,
+      "past_top_score": 901,
+      "percent_above": 14.5
+    },
+    {
+      "player_id": 5,
+      "player_tag": "BurpALot",
+      "weekend_rank": 6,
+      "recent_score": 3232,
+      "past_top_score": 2838,
+      "percent_above": 13.9
+    }
+  ],
+  "players_exceeded_lifetime_avg": [
+    {
+      "player_id": 45,
+      "player_tag": "Trick",
+      "weekend_rank": 27,
+      "recent_score": 776,
+      "lifetime_avg": 166,
+      "percent_above_avg": 367.5
+    },
+    {
+      "player_id": 5,
+      "player_tag": "BurpALot",
+      "weekend_rank": 6,
+      "recent_score": 3232,
+      "lifetime_avg": 781,
+      "percent_above_avg": 313.8
+    },
+    {
+      "player_id": 32,
+      "player_tag": "nvk",
+      "weekend_rank": 26,
+      "recent_score": 1032,
+      "lifetime_avg": 337,
+      "percent_above_avg": 206.2
+    },
+    {
+      "player_id": 25,
+      "player_tag": "Laura",
+      "weekend_rank": 12,
+      "recent_score": 2635,
+      "lifetime_avg": 1104,
+      "percent_above_avg": 138.7
+    },
+    {
+      "player_id": 24,
+      "player_tag": "justme",
+      "weekend_rank": 28,
+      "recent_score": 556,
+      "lifetime_avg": 249,
+      "percent_above_avg": 123.3
+    },
+    {
+      "player_id": 18,
+      "player_tag": "Grandmaphyll",
+      "weekend_rank": 13,
+      "recent_score": 2540,
+      "lifetime_avg": 1237,
+      "percent_above_avg": 105.3
+    },
+    {
+      "player_id": 36,
+      "player_tag": "Siley",
+      "weekend_rank": 2,
+      "recent_score": 6699,
+      "lifetime_avg": 3800,
+      "percent_above_avg": 76.3
+    },
+    {
+      "player_id": 6,
+      "player_tag": "cariann",
+      "weekend_rank": 19,
+      "recent_score": 1863,
+      "lifetime_avg": 1143,
+      "percent_above_avg": 63.0
+    },
+    {
+      "player_id": 49,
+      "player_tag": "weeminx",
+      "weekend_rank": 1,
+      "recent_score": 7465,
+      "lifetime_avg": 4843,
+      "percent_above_avg": 54.1
+    }
+  ],
+  "players_low_recent_avg": [
+    {
+      "player_id": 16,
+      "player_tag": "giddyupjenny",
+      "weekend_rank": 30,
+      "recent_avg": 281,
+      "lifetime_avg": 456
+    },
+    {
+      "player_id": 19,
+      "player_tag": "hunny",
+      "weekend_rank": 32,
+      "recent_avg": 225,
+      "lifetime_avg": 220
+    }
+  ]
+}
