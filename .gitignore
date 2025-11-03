@@ -18,7 +18,7 @@
 app_keys.json
 keys.json
 passwords.json
-key_files/*
+.key_files/*
 
 # Subfolders that could be created in different sub-projects and subfolders that should be excluded
 **/dumps/
