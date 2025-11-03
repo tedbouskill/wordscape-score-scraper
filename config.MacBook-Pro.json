@@ -1,8 +1,8 @@
 {
     "pgServers": {
-        "sourcePostgres": "production",
-        "targetPostgresDev": "localdev",
-        "targetPostgresProd": "production"
+        "sourcePostgres": "supabase",
+        "targetPostgresDev": "localhost",
+        "targetPostgresProd": "supabase"
     },
     "GoogleBaseFolders": {
         "BigQueryBase": "/Volumes/BigData/BigQuery",

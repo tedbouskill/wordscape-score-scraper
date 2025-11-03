@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "project-packages"
+version = "0.1"
+description = "A shared utility package for the workspace project"
+authors = [
+    { name = "Theodore William Bouskill", email = "ted@truenorthalgorithms.com" }
+]
+license = { text = "MIT" }
+keywords = ["utilities", "helpers", "shared"]
+requires-python = ">=3.6"
+
+[tool.setuptools.packages.find]
+where = ["."]

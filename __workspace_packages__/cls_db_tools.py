@@ -104,7 +104,7 @@ class DbRepositorySingleton:
 
     def get_player_id(self, player_tag):
         cursor = self.connection.cursor()
-        cursor.execute("SELECT id FROM players WHERE player_tag = ?", (player_tag,))
+        cursor.execute("SELECT id FROM players WHERE LOWER(player_tag) = LOWER(?)", (player_tag,))
         row = cursor.fetchone()
         if row:
             player_id = row[0]
@@ -124,6 +124,9 @@ class DbRepositorySingleton:
         cursor.execute("INSERT INTO players (player_tag, start_date) VALUES (?, ?)", (player_tag, friday_date,))
         player_id = cursor.lastrowid
         self.connection.commit()
+
+        self.set_player_on_team(player_id)  # Set the player on the team after creation
+        self.set_player_active(player_id)  # Set the player as active after creation
 
         return player_id
 
@@ -268,9 +271,7 @@ class DbRepositorySingleton:
         )
         UPDATE tournament_results
         SET rank = (
-            SELECT calculated_rank
-            FROM ranked_results
-            WHERE ranked_results.player_id = tournament_results.player_id
+            SELECT calculated_rank FROM ranked_results WHERE ranked_results.player_id = tournament_results.player_id
         )
         WHERE weekend_date = ?;
         """

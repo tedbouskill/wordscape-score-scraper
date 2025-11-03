@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Script",
+            "type": "shell",
+            "command": "WORKSPACE_ROOT=${workspaceFolder:%PROJECT-NAME%} python ${file}",
+            "problemMatcher": []
+        }
+    ]
+}

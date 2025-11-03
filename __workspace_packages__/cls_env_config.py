@@ -25,23 +25,22 @@ class EnvConfigSingleton:
 
     def _load_env_config(self):
         hostname = EnvTools.get_hostname()
+        self._repo_root = EnvTools.find_repo_root()
+        self._workspace_root = os.getenv('WORKSPACE_ROOT', None)
 
-        self._config = EnvTools.load_settings('config.json')
+        self._config = EnvTools.load_settings('config.json', self.repo_root)
 
         # Load local config file if it exists which should have settings specific to the local machine
         local_config_file = f'config.{hostname}.json'
-        self._local_config = EnvTools.load_settings(local_config_file)
+        self._local_config = EnvTools.load_settings(local_config_file, self.repo_root)
         if self._local_config is not None:
             self._merge_dicts(self._config, self._local_config)
 
         # Load app keys which might be property values or a relative path to a key file
-        self._app_keys = EnvTools.load_settings('app_keys.json')
+        self._app_keys = EnvTools.load_settings('app_keys.json', self.repo_root)
         if self._app_keys is not None:
             self._merge_dicts(self._config, self._app_keys)
 
-        # Optionally load from environment variables
-        self._repo_root = EnvTools.find_repo_root()
-        self._workspace_root = os.getenv('WORKSPACE_ROOT', None)
         #self.config["DEBUG_MODE"] = os.getenv("DEBUG_MODE", str(self.config["DEBUG_MODE"])).lower() in ['true', '1', 't']
 
     def _merge_dicts(self, base, updates):
@@ -76,7 +75,7 @@ class EnvConfigSingleton:
         return self.merged_config['keys'][app_keys]
 
     def all_app_keys(self):
-        return self.merged_config['keys']
+        return self._app_keys
 
     def get_source_psycopg2_params(self, server_alias="source", database="postgres"):
         pgSourceKey = self.merged_config['pgServers'][server_alias]
@@ -121,8 +120,8 @@ if __name__ == "__main__":
     if (config1.get("keys") is not None):
         print("\nAll Keys\n", config1.all_app_keys())
 
-    print("\nSource asynpg Postgres: ", config1.get_source_asyncpg_params("postgres"))
-    print("Source psycopg2 Postgres: ", config1.get_source_psycopg2_params("postgres"))
-    print("Target psycopg2 Postgres: ", config1.get_target_psycopg2_params_prod("postgres"))
+    print("\nSource asynpg Postgres: ", config1.get_source_asyncpg_params(server_alias="sourcePostgres", database="postgres"))
+    print("Source psycopg2 Postgres: ", config1.get_source_psycopg2_params(server_alias="sourcePostgres", database="postgres"))
+    print("Target psycopg2 Postgres: ", config1.get_target_psycopg2_params(server_alias="targetPostgresDev", database="postgres"))
 
     print("\nFull merged config: ", json.dumps(config1.merged_config, indent=2))

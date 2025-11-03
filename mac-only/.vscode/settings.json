@@ -1,13 +1,14 @@
 {
     "python.analysis.autoImportCompletions": true,
     "python.analysis.extraPaths": [
-        "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/repo_packages",
-        "${workspaceFolder}/workspace_packages"
+        "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__",
+        "${workspaceFolder:MAC-ONLY}/workspace_packages"
     ],
-    "python.envFile": "${workspaceFolder}/.env",
+    "python.envFile": "${workspaceFolder:MAC-ONLY}/.env",
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.executeInFileDir": true,
     "python.terminal.focusAfterLaunch": true,
-    "python.terminal.launchArgs": []
+    "python.terminal.launchArgs": [],
+    "python.defaultInterpreterPath": ".venv/bin/python"
 }

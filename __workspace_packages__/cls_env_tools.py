@@ -30,25 +30,23 @@ class EnvTools:
 
     @staticmethod
     def get_hostname():
-        return socket.gethostname()
+        return socket.gethostname().split('.')[0]
 
     @staticmethod
     def load_settings(json_file, file_path=None):
         if file_path is None:
-            repo_root = EnvTools.find_repo_root()
-            if repo_root is None:
+            file_path = EnvTools.find_repo_root()
+            if file_path is None:
                 logging.critical("Repository root not found.")
                 return None
-            file_path = repo_root / json_file
-        else:
-            file_path = file_path / json_file
 
         # Check if the configuration file exists, then load it
-        if not os.path.exists(file_path):
-            logging.debug(f"Settings file {file_path} not found at {file_path}")
+        full_path = file_path / json_file
+        if not os.path.exists(full_path):
+            logging.debug(f"Settings file {full_path} not found")
             return None
 
-        with open(file_path, 'r') as file:
+        with open(full_path, 'r') as file:
             config = json.load(file)
 
         def remove_comments(d):

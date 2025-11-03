@@ -1,52 +1,61 @@
 {
     "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "subProjectName",
+            "type": "promptString",
+            "description": "Enter the Sub-Project name",
+            "default": ""
+        },
+        {
+            "id": "oldProjectName",
+            "type": "promptString",
+            "description": "Enter the current Sub-Project name",
+            "default": ""
+        },
+        {
+            "id": "newProjectName",
+            "type": "promptString",
+            "description": "Enter the new Sub-Project name",
+            "default": ""
+        },
+        {
+            "id": "projectToUpdate",
+            "type": "promptString",
+            "description": "Enter project name to update (leave . for all projects)",
+            "default": "."
+        },
+        {
+            "id": "packageName",
+            "description": "Package name to install/uninstall",
+            "default": "",
+            "type": "promptString"
+        }
+    ],
     "tasks": [
         {
             "label": "Run Script",
             "type": "shell",
-            "command": "WORKSPACE_ROOT=${workspaceFolder} python ${file}",
+            "command": "WORKSPACE_ROOT=${workspaceFolder:PRIME-FORGE} python ${file}",
             "problemMatcher": []
         },
         {
-            "label": "Update Settings",
-            "type": "shell",
-            "command": "python",
-            "args": ["update_settings.py"],
-            "problemMatcher": [],
-            "runOptions": {
-                "runOn": "folderOpen"  // Automatically run when the workspace is opened
-            }
-        },
-        {
-            "label": "Run AppleScript",
-            "type": "shell",
-            "command": "osascript",
-            "args": [
-                "${file}"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Setup Python Projects",
+            "label": "Initalize Root Project",
             "type": "shell",
             "command": "echo",
             "args": [
-                "Setting up Python Subproject..."
+                "Initialize Root Projects..."
             ],
             "windows": {
-                "command": ".\\scripts\\shell\\Add-Sub-Project.ps1",
+                "command": "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Initialize-Root-Project.ps1",
                 "type": "shell"
             },
             "linux": {
-                "command": "./scripts/shell/add_sub_project.sh",
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_root_project.sh",
                 "type": "shell"
             },
             "osx": {
-                "command": "./scripts/shell/add_sub_project.sh",
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_root_project.sh",
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -58,22 +67,22 @@
             }
         },
         {
-            "label": "Initalize Projects",
+            "label": "Initalize All Projects",
             "type": "shell",
             "command": "echo",
             "args": [
                 "Setting up Projects..."
             ],
             "windows": {
-                "command": ".\\scripts\\powershell\\Initialize-Python-Projects.ps1",
+                "command": "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Initialize-Python-Projects.ps1",
                 "type": "shell"
             },
             "linux": {
-                "command": "./scripts/shell/setup_python_projects.sh",
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_python_projects.sh",
                 "type": "shell"
             },
             "osx": {
-                "command": "./scripts/shell/setup_python_projects.sh",
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_python_projects.sh",
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -85,9 +94,72 @@
             }
         },
         {
-            "label": "pip freeze requirements.txt",
+            "label": "Add Sub-Project",
             "type": "shell",
-            "command": "pip freeze > requirements.txt",
+            "command": "echo",
+            "args": [
+                "${input:subProjectName}"
+            ],
+            "windows": {
+                "command": "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Add-Sub-Project.ps1",
+                "type": "shell"
+            },
+            "linux": {
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/add_sub_project.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/add_sub_project.sh",
+                "type": "shell"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Rename Sub-Project",
+            "type": "shell",
+            "command": "echo",
+            "args": [
+                "${input:oldProjectName} ${input:newProjectName}"
+            ],
+            "windows": {
+                "command": "powershell.exe",
+                "args": [
+                    "-File",
+                    ".\\.scripts\\powershell\\Rename-Sub-Project.ps1",
+                    "-oldProjectName",
+                    "${input:oldProjectName}",
+                    "-newProjectName",
+                    "${input:newProjectName}"
+                ]
+            },
+            "linux": {
+                "command": "./.scripts/shell/rename_sub_project.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "./.scripts/shell/rename_sub_project.sh",
+                "type": "shell"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Update requirements.txt",
+            "type": "shell",
+            "args": [
+                "${input:projectToUpdate}"
+            ],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -97,20 +169,53 @@
                 "panel": "shared"
             },
             "windows": {
-                "command": ".\\.venv\\Scripts\\pip freeze > requirements.txt"
+                "command": "powershell.exe",
+                "args": [
+                    "-NoProfile",
+                    "-File",
+                    "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Update-Requirements.ps1",
+                    "-projectToUpdate",
+                    "${input:projectToUpdate}"
+                ],
+                "options": {
+                    "env": {
+                        "VSCODE_TASK": "true"
+                    }
+                },
+                "shell": {
+                    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                    "args": ["-NoProfile"]
+                }
             },
             "linux": {
-                "command": "./.venv/bin/pip freeze > requirements.txt"
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/update_requirements.sh",
+                "args": [
+                    "${input:projectToUpdate}"
+                ]
             },
             "osx": {
-                "command": "./.venv/bin/pip freeze > requirements.txt"
+                "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/update_requirements.sh",
+                "args": [
+                    "${input:projectToUpdate}"
+                ]
             }
         },
         {
-            "label": "Update TODOs",
+            "label": "Update Settings",
             "type": "shell",
             "command": "python",
-            "args": ["docs/update_todos.py"],
+            "args": [
+                "${workspaceFolder:PRIME-FORGE}/src/update_settings.py"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Extract and Update TODOs",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "${workspaceFolder:PRIME-FORGE}/docs/extract_update_todos.py"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -124,7 +229,9 @@
             "label": "Make Docs",
             "type": "shell",
             "command": "python",
-            "args": ["scripts/shell/update_todos.py"],
+            "args": [
+                "${workspaceFolder:PRIME-FORGE}/.scripts/shell/make_docs.sh"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true

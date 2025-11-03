@@ -1,6 +1,29 @@
 {
     "python.analysis.autoImportCompletions": true,
     "python.analysis.extraPaths": [
-        "${workspaceFolder}/repo_packages"
-    ]
+        "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__",
+        "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/project_packages"
+    ],
+    "terminal.integrated.profiles.windows": {
+        "Windows PowerShell": {
+            "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoExit",
+                "-Command",
+                "& { . \"${workspaceFolder}/.venv/scripts/Activate.ps1\" }"
+            ]
+        }
+    },
+    "python.envFile": "${workspaceFolder:PRIME-FORGE}/.env",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.terminal.executeInFileDir": true,
+    "python.terminal.focusAfterLaunch": true,
+    "python.terminal.launchArgs": [],
+    "python.defaultInterpreterPath": "${workspaceFolder:PRIME-FORGE}\\.venv\\.scripts\\python.exe",
+    "python.testing.pytestArgs": [
+        "rust"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

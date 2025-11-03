@@ -11,12 +11,12 @@
         "GoogleCloudStorage" : {
             "project_id": "[Add your project ID]",
             "_comment": "The keyfile_path is a subfolder off the root of the repo and the file is not in the Git repo",
-            "keyfile_path": "key_files/[Add your key file name].json"
+            "keyfile_path": ".key-files/[Add your key file name].json"
         },
         "GoogleBigQuery" : {
             "project_id": "[Add your project ID]",
             "_comment": "The keyfile_path is a subfolder off the root of the repo and the file is not in the Git repo",
-            "keyfile_path": "key_files/[Add your key file name].json"
+            "keyfile_path": ".key-files/[Add your key file name].json"
         }
     },
     "pgConnStrs": {

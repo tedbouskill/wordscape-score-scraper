@@ -17,7 +17,7 @@ script_dir="$(dirname "${BASH_SOURCE[0]}")"
 # Check if the script is already sourced
 if [ -z "${SCRIPT_INCLUDED+x}" ]; then
     # shellcheck disable=SC1091
-    source "$script_dir/scripts_shell/common.sh"
+    source "$script_dir/.scripts_shell/common.sh"
     SCRIPT_INCLUDED=1
 fi
 

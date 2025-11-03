@@ -56,7 +56,7 @@ copy_host_file() {
     local target_path=""
 
     if [ "$(uname)" == "Darwin" ]; then
-        host_file="$repo_root/templates/config.[HOST-MAC].json"
+        host_file="$repo_root/.templates/config.[HOST-MAC].json"
         target_path="$repo_root/config.$(hostname).json"
     elif [ "$(uname)" == "Linux" ]; then
         echo "Unsupported OS: Linux"
@@ -74,6 +74,63 @@ copy_host_file() {
     else
         echo "Host file already exists at $target_path"
     fi
+}
+
+# Function to update requirements.txt for a project
+update_requirements_txt() {
+    local project_path="$1"
+    local is_root="$2"
+
+    # Convert relative path to absolute path relative to repo root
+    local full_project_path=""
+    if [ "$project_path" == "." ]; then
+        full_project_path="$repo_root"
+    else
+        full_project_path="$repo_root/$project_path"
+    fi
+
+    if [ ! -d "$full_project_path" ]; then
+        echo "Error: Project path not found: $full_project_path" >&2
+        return 1
+    fi
+
+    echo "Recreating requirements.txt in project $project_path..."
+
+    local venv_path="$full_project_path/.venv"
+
+    if [ ! -d "$venv_path" ]; then
+        echo "Error: Virtual environment not found at $venv_path" >&2
+        return 1
+    fi
+
+    # Store current location
+    local original_location=$(pwd)
+
+    # Use a subshell to ensure we return to original location
+    (
+        # Change to the project directory
+        cd "$full_project_path" || exit 1
+
+        # Activate the virtual environment
+        source "$venv_path/bin/activate"
+
+        # Freeze the requirements excluding editable packages
+        pip freeze --exclude-editable > requirements.txt
+
+        # Append the editable package references
+        if [ "$is_root" != "true" ]; then
+            echo "-e ../__workspace_packages__" >> requirements.txt
+            echo "-e ./__project_packages__" >> requirements.txt
+        else
+            echo "-e ./__workspace_packages__" >> requirements.txt
+        fi
+
+        # Deactivate the virtual environment
+        deactivate
+    )
+
+    # Return to original location (this happens automatically after subshell)
+    cd "$original_location" || return 1
 }
 
 # Function to set up the Python environment for each project
@@ -107,14 +164,14 @@ initialize_python_environment() {
 
     # Register editable packages
     if [ "$is_root" == "true" ]; then
-        echo "Registering repo_packages in the root project..."
-        pip install -e "$project_path/repo_packages"
-        pythonpath="$project_path/repo_packages"
+        echo "Registering __workspace_packages__ in the root project..."
+        pip install -e "$project_path/__workspace_packages__"
+        pythonpath="$project_path/__workspace_packages__"
         copy_host_file
     else
-        echo "Registering repo_packages and workspace_packages in subproject..."
-        repo_path=$(cd "$project_path/../repo_packages" && pwd)
-        workspace_path=$(cd "$project_path/workspace_packages" && pwd)
+        echo "Registering __workspace_packages__ and __project_packages__ in subproject..."
+        repo_path=$(cd "$project_path/../__workspace_packages__" && pwd)
+        workspace_path=$(cd "$project_path/__project_packages__" && pwd)
         pip install -e "$repo_path"
         pip install -e "$workspace_path"
         pythonpath="$repo_path:$workspace_path"
@@ -129,9 +186,9 @@ initialize_python_environment() {
     if [ -f "$requirements_path" ]; then
         echo "Installing dependencies from $requirements_path..."
         pip install -r "$requirements_path"
-    #else
-    # To Do: Ensure the repo_packages and workspace_packages are set to editable before creating the requirements.txt file
-    #    echo "No requirements.txt found. Creating one..."
+    else
+    # To Do: Ensure the __workspace_packages__ and __project_packages__ are set to editable before creating the requirements.txt file
+        echo "No requirements.txt found."
     #    pip freeze > "$requirements_path"
     #    echo "requirements.txt created at $requirements_path"
     fi

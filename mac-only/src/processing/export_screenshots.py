@@ -5,7 +5,6 @@ import sys
 from datetime import datetime, timedelta
 from osxphotos import PhotosDB
 
-
 # Set up root logger configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -13,6 +12,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Adjust sys.path to include workspace packages
+#repo_root = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
+#workspace_packages_path = os.path.join(repo_root, '__workspace_packages__')
+#if workspace_packages_path not in sys.path:
+#    sys.path.insert(0, workspace_packages_path)
 
 try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
@@ -22,6 +26,8 @@ except ImportError as e:
     logging.error(f"Error importing required modules: {e}")
     sys.exit(1)
 
+# Initialize the configuration settings here
+env_config = EnvConfig()
 
 logging_manager = None
 

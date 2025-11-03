@@ -31,13 +31,13 @@ create_root_project_workspace() {
     local repo_name_upper="$3"
 
     echo "Creating root project workspace..."
-    copy_template_if_not_exists "$repo_root/templates/[REPO-NAME].code-workspace" "$repo_root/$repo_name.code-workspace"
+    copy_template_if_not_exists "$repo_root/.templates/[REPO-NAME].code-workspace" "$repo_root/$repo_name.code-workspace"
 
     echo "Find and replace [REPO-NAME] with the actual repository name"
     find_and_replace "\[REPO-NAME\]" "$repo_name_upper" "$repo_root/$repo_name.code-workspace"
 
     echo "Copy the launch.json file to the .vscode folder"
-    copy_template_if_not_exists "$repo_root/templates/launch.json" "$repo_root/.vscode/launch.json"
+    copy_template_if_not_exists "$repo_root/.templates/launch.json" "$repo_root/.vscode/launch.json"
 
     echo "Find and replace [REPO-NAME] with the actual repository name"
     find_and_replace "\[REPO-NAME\]" "$repo_name_upper" "$repo_root/.vscode/launch.json"

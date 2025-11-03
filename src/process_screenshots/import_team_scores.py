@@ -122,8 +122,8 @@ def process_player_matches(matches, weekend_date, friday_date):
         logging.info(f"Player: {player_tag}, Score: {score}")
 
         # If I can improve the OCR scan of player names, I can uncomment the next line
-        #player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
-        player_id = db_repository.get_player_id(player_tag)
+        player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
+        #player_id = db_repository.get_player_id(player_tag)
 
         db_repository.upsert_weekend_player_score(weekend_date, player_id, score)
 

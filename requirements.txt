@@ -79,7 +79,6 @@ pytz==2024.2
 PyYAML==6.0.2
 pyzmq==26.2.0
 RapidFuzz==3.11.0
--e ./repo_packages
 scikit-image==0.25.0
 scikit-learn==1.6.0
 scipy==1.15.0
@@ -102,3 +101,5 @@ traitlets==5.14.3
 typing_extensions==4.12.2
 tzdata==2024.2
 wcwidth==0.2.13
+-e ./__workspace_packages__
+-e ./__project_packages__
