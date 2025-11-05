@@ -44,6 +44,32 @@ class ImageTools:
         return output
 
     @staticmethod
+    def isolate_dark_text_opencv(image: np.ndarray, threshold=127) -> np.ndarray:
+        """
+        Isolate dark text (like brown) on lighter backgrounds (like yellow star or light blue).
+        Dark pixels become black, light pixels become white.
+        
+        Args:
+            image: Input image
+            threshold: Brightness threshold (0-255). Pixels darker than this become black text.
+                      Lower values = only very dark text is kept
+                      Higher values = more colors are treated as text
+        
+        Returns:
+            Binary image with dark text as black on white background
+        """
+        # Convert the image to grayscale
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # Create a binary image: pixels below threshold become black (text), above become white (background)
+        _, binary = cv2.threshold(gray, threshold, 255, cv2.THRESH_BINARY)
+
+        # Convert back to 3-channel image for consistency
+        output = cv2.cvtColor(binary, cv2.COLOR_GRAY2BGR)
+
+        return output
+
+    @staticmethod
     def remove_everything_but_white(image, threshold=250):
         """
         Remove everything but white from an image.

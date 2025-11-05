@@ -32,11 +32,11 @@ except ImportError as e:
 weekend_data = {}
 
 # Adding a weekend date
-weekend_date = "2025-06-01"
+weekend_date = "2025-07-27"
 if weekend_date not in weekend_data:
     weekend_data[weekend_date] = set()  # Create an empty set for the weekend date
 
-weekend_data[weekend_date].add(("c4est", 1080))
+weekend_data[weekend_date].add(("loulou", 1901))
 
 #weekend_data[weekend_date].add(("Nirazz", 94))
 #weekend_data[weekend_date].add(("trrr", 22))

@@ -24,6 +24,40 @@ class ColorFormatter(logging.Formatter):
     }
 
     def format(self, record):
+        # Handle incorrect logging usage (comma-separated args without format placeholders)
+        # Convert to string concatenation if no format placeholders found
+        if record.args:
+            msg = record.msg
+            # Check if message has format placeholders
+            has_placeholders = '%' in str(msg) or '{}' in str(msg)
+            
+            if not has_placeholders and record.args:
+                # No placeholders but args provided - concatenate them
+                processed_args = []
+                args_to_process = record.args if isinstance(record.args, tuple) else [record.args]
+                for arg in args_to_process:
+                    if arg is None:
+                        processed_args.append("<null>")
+                    elif arg == "":
+                        processed_args.append("<empty>")
+                    else:
+                        processed_args.append(str(arg))
+                # Concatenate message with args
+                record.msg = str(msg) + " " + " ".join(processed_args)
+                record.args = ()  # Clear args since we've incorporated them into msg
+            else:
+                # Has placeholders - just handle None/empty values
+                processed_args = []
+                args_to_process = record.args if isinstance(record.args, tuple) else [record.args]
+                for arg in args_to_process:
+                    if arg is None:
+                        processed_args.append("<null>")
+                    elif arg == "":
+                        processed_args.append("<empty>")
+                    else:
+                        processed_args.append(arg)
+                record.args = tuple(processed_args) if len(processed_args) > 1 else (processed_args[0],) if processed_args else ()
+        
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
@@ -94,8 +128,8 @@ class LoggingManagerSingleton:
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(console_level)
 
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler.setFormatter(formatter)
+        # Use ColorFormatter for file handler too to get consistent None/<empty> handling
+        file_handler.setFormatter(ColorFormatter())
 
         stream_handler.setFormatter(ColorFormatter())
 

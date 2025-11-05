@@ -29,26 +29,6 @@ import easyocr
 # Initialize EasyOCR
 reader = easyocr.Reader(['en'])
 
-# Common OCR misreadings for player tags
-PLAYER_TAG_CORRECTIONS = {
-    'cAest': 'c4est',
-    'Jay]': 'JayJ',
-    # Add more corrections here as needed
-    # Format: 'incorrect_reading': 'correct_tag'
-}
-
-def correct_player_tag(tag: str) -> str:
-    """
-    Correct common OCR misreadings of player tags.
-    
-    Args:
-        tag: The OCR-detected player tag
-        
-    Returns:
-        The corrected player tag if a correction exists, otherwise the original tag
-    """
-    return PLAYER_TAG_CORRECTIONS.get(tag, tag)
-
 def process_image(file_name: str) -> tuple:
     rank_txt = None
 
@@ -77,21 +57,9 @@ def process_image(file_name: str) -> tuple:
         #cv2.destroyAllWindows()  # Close all OpenCV windows
         
         # Try with custom Tesseract config for better number recognition
-        rank_results = reader.readtext(rank_img, detail=0, paragraph=False)
-        
-        # Extract the rank text from the list returned by easyocr
-        if rank_results and len(rank_results) > 0:
-            rank_txt = rank_results[0]
-            logging.info(f"Team rank: {rank_txt}")
-            
-            # Verify the team rank was extracted correctly
-            # The rank text should be a hash followed by numbers, e.g., "#1"
-            if not (rank_txt.startswith('#') and rank_txt[1:].isdigit()):
-                logging.warning(f"Extracted rank text '{rank_txt}' does not match expected format.")
-                rank_txt = None
-        else:
-            logging.warning("No rank text extracted from image.")
-            rank_txt = None
+        custom_config = r'--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789#'
+        rank_txt = pytesseract.image_to_string(rank_img, config=custom_config).strip()
+        logging.info(f"Team rank: {rank_txt}")
 
     player_results = []
     unmatched_texts = []
@@ -102,17 +70,12 @@ def process_image(file_name: str) -> tuple:
     players_img = ImageTools.convert_non_white_to_black_opencv(players_img, 200)
     results = reader.readtext(players_img)
     for box, text, confidence in results:
-        # Apply OCR correction for common misreadings
-        corrected_text = correct_player_tag(text)
-        if corrected_text != text:
-            logging.debug(f"Corrected OCR: '{text}' -> '{corrected_text}'")
-        
-        player_id = db_repository.get_player_id(corrected_text)
+        player_id = db_repository.get_player_id(text)
         if box[0][0] < 50:
             if player_id is not None:
-                player_results.append((box, corrected_text, confidence))
+                player_results.append((box, text, confidence))
             else:
-                unmatched_texts.append((corrected_text, confidence))
+                unmatched_texts.append((text, confidence))
             continue
 
         if box[0][0] > 650 and StringHelpers.is_all_numeric(text):
@@ -134,7 +97,6 @@ def process_image(file_name: str) -> tuple:
                 matched = True
                 break
         if not matched:
-            # text is already corrected from earlier processing
             player_id = db_repository.get_player_id(text)
             if player_id:
                 matches.append((text, 0))
@@ -175,12 +137,6 @@ def process_player_matches(matches, weekend_date, friday_date):
     for player_tag, score in matches:
         logging.info(f"Player: {player_tag}, Score: {score}")
 
-        # If I can improve the OCR scan of player names, I can uncomment the next line
-        #player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
-        player_id = db_repository.get_player_id(player_tag)
-
-        db_repository.upsert_weekend_player_score(weekend_date, player_id, score)
-
     return
 
 def process_img_files(images):
@@ -190,7 +146,6 @@ def process_img_files(images):
     img_files_processed = 0
 
     # Get weekend dates from the filenames
-    print("Preprocessing images to determine weekend dates...")
     for image_file in images:
 
         logging.debug(f"Processing {image_file} . . .")
@@ -203,30 +158,39 @@ def process_img_files(images):
         sunday_date, friday_date = ProjectTools.get_weekend_dates(date_str)
 
         weekend_dates.add((sunday_date, file_date, friday_date, date_str))
+
     # for image_file in images:
-    
+
     # Process the images for each sunday weekend date
-    print("Processing images for each weekend date...")
     for sunday_date, files_date, friday_date, date_str in sorted(weekend_dates): # Sort by weekend date
-        print(f"\nProcessing {sunday_date}...")
+        logging.info(f"Processing {sunday_date}...")
 
         # Get the image files for the weekend date
         image_files_for_weekend = [img for img in images if files_date in img]
 
-        # Reset scores for the tournament
-        db_repository.reset_scores_for_tournament(sunday_date)
-
         for image_file in sorted(image_files_for_weekend):
             image_file_name = os.path.basename(image_file)
 
-            logging.info(f"\tProcessing {image_file_name} for {sunday_date} . . .")
+            logging.info(f"\tProcessing {image_file_name} . . .")
 
             # Process the image
             matches, unmatched_text, unmatched_scores, rank_txt = process_image(image_file)
 
-            # The team tournament rank is not being scanned correctly at this time
             if rank_txt is not None:
-                db_repository.upsert_weekend_team_rank(sunday_date, rank_txt)
+                print(f"Team Rank for {sunday_date}: {rank_txt}")
+
+            #remaining_unmatched_text = []
+            #for text, confidence in unmatched_text:
+            #    player_id = db_repository.get_player_id(text)
+            #    if player_id:
+            #        logging.info(f"Player ID found in unmatched text: {text}, ID: {player_id}, assigning score: 0")
+            #        matches.append((text, 0))
+            #    else:
+            #        logging.warning(f"Unmatched Text: {text}, Confidence: {confidence}")
+            #        remaining_unmatched_text.append((text, confidence))
+
+            # Update unmatched_text with the remaining unmatched items
+            #unmatched_text = remaining_unmatched_text
 
             # Insert the player scores including creating new players and inserting friday as the join date
             process_player_matches(matches, sunday_date, friday_date)
@@ -245,22 +209,9 @@ def process_img_files(images):
                     logging.warning(f"Score: {score}, Confidence: {confidence}")
                 continue
 
-            # Delete the file if it was processed successfully
-            logging.debug(f"Deleting {image_file}")
-            send2trash(image_file)
-
             img_files_processed += 1
 
         # for img_file in sorted(img_files_for_weekend):
-
-        # Set scores to 0 for missing players
-        db_repository.set_missing_scores_to_zero_for_weekend(sunday_date)
-
-        # Set the weekend date ranks
-        db_repository.update_ranks_for_weekend_date(sunday_date)
-        
-        # Update team score for the weekend date
-        db_repository.upsert_weekend_team_score_for_date(sunday_date)
 
     # for sunday_date, friday_date, files_date in sorted(weekend_dates): # Sort by weekend date
 
@@ -276,8 +227,7 @@ def main():
     db_path_config = env_config.merged_config['constants']['db_path']
     db_path = db_path_config.replace("{repo_root}", str(repo_root))
 
-    images_config = env_config.merged_config['constants']['tournament_images_folder']
-    images_path = images_config.replace("{repo_root}", str(repo_root))
+    images_path = os.path.join(repo_root, "images/png_samples/weekend_scores")
 
     logging_manager = None
 
@@ -288,7 +238,7 @@ def main():
         sys.exit(1)
 
     try:
-        logger = logging_manager.setup_default_logging(script_name, console_level=logging.INFO)
+        logger = logging_manager.setup_default_logging(script_name, console_level=logging.DEBUG)
 
         logger.debug(f"Database Path: {db_path}")
         logger.debug(f"Images Folder: {images_path}")
@@ -301,7 +251,7 @@ def main():
         db_repository = DbRepositorySingleton(db_path)
 
         img_files = ProjectTools.get_img_files(images_path)
-        print(f"Processing {len(img_files)} files . . .")
+        logger.info(f"Processing {len(img_files)} rows . . .")
 
         results = process_img_files(img_files)
 
@@ -313,10 +263,10 @@ def main():
 
         duration = end_time - process_start_time
 
-        print(f"\nProgram execution time: {duration:.2f} seconds")
+        logger.info(f"Program execution time: {duration:.2f} seconds")
 
         if img_files_processed is not None and img_files_processed > 0:
-            print(f"Total files processed: {img_files_processed} at a rate of {duration / img_files_processed:.2f} seconds per file")
+            logger.info(f"Total files processed: {img_files_processed} at a rate of {duration / img_files_processed:.2f} seconds per file")
 
     print("Script has finished.\n") # This is the last line of the script
 

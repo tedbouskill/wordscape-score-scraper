@@ -55,6 +55,7 @@ class DbRepositorySingleton:
     def upsert_weekend_player_score(self, weekend_date, player_id, score):
         """
         Insert or update extracted data into SQLite database.
+        Prioritizes non-zero scores: only updates if the new score is non-zero OR if the existing score is zero.
         """
         weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
@@ -62,7 +63,11 @@ class DbRepositorySingleton:
             INSERT INTO tournament_results (weekend_date, player_id, score)
             VALUES (?, ?, ?)
             ON CONFLICT(weekend_date, player_id) DO UPDATE SET
-            score = excluded.score
+            score = CASE 
+                WHEN excluded.score != 0 THEN excluded.score
+                WHEN tournament_results.score = 0 THEN excluded.score
+                ELSE tournament_results.score
+            END
         """
         cursor.execute(insert_query, (weekend_date, player_id, score))
         self.connection.commit()
@@ -84,6 +89,72 @@ class DbRepositorySingleton:
 
         return
 
+    def upsert_weekend_team_rank(self, weekend_date, rank):
+        """
+        Insert or update team rank for a weekend date in SQLite database.
+        Only updates the rank if the existing rank is NULL.
+        """
+        weekend_date = validate_and_format_date(weekend_date)
+        cursor = self.connection.cursor()
+        insert_query = """
+            INSERT INTO team_tournament_results (weekend_date, team_rank)
+            VALUES (?, ?)
+            ON CONFLICT(weekend_date) DO UPDATE SET
+            team_rank = CASE 
+                WHEN team_tournament_results.team_rank IS NULL THEN excluded.team_rank
+                ELSE team_tournament_results.team_rank
+            END
+            """
+        cursor.execute(insert_query, (weekend_date, rank))
+        self.connection.commit()
+
+        return
+
+    def update_weekend_team_score(self, weekend_date, score):
+        weekend_date = validate_and_format_date(weekend_date)
+        cursor = self.connection.cursor()
+        insert_query = """UPDATE team_tournament_results SET team_score = ? WHERE weekend_date = ?"""
+        cursor.execute(insert_query, (weekend_date, score))
+        self.connection.commit()
+
+        return
+
+    def upsert_weekend_team_scores(self):
+        weekend_date = validate_and_format_date(weekend_date)
+        cursor = self.connection.cursor()
+        insert_query = """
+            INSERT INTO team_tournament_results (weekend_date, team_score)
+            SELECT weekend_date, SUM(score) AS team_score
+            FROM tournament_results
+            GROUP BY weekend_date
+            ON CONFLICT(weekend_date) DO UPDATE SET
+                team_score = excluded.team_score;
+        """
+        cursor.execute(insert_query)
+        self.connection.commit()
+
+        return
+
+    def upsert_weekend_team_score_for_date(self, weekend_date):
+        """
+        Insert or update team score for a specific weekend date in SQLite database.
+        Calculates the sum of all player scores for that weekend.
+        """
+        weekend_date = validate_and_format_date(weekend_date)
+        cursor = self.connection.cursor()
+        insert_query = """
+            INSERT INTO team_tournament_results (weekend_date, team_score)
+            SELECT ?, SUM(score) AS team_score
+            FROM tournament_results
+            WHERE weekend_date = ?
+            ON CONFLICT(weekend_date) DO UPDATE SET
+                team_score = excluded.team_score;
+        """
+        cursor.execute(insert_query, (weekend_date, weekend_date))
+        self.connection.commit()
+
+        return
+
     def upsert_weekly_player_stats(self, weekend_date, player_id, helps, stars):
         """
         Insert or update extracted data into SQLite database.
@@ -92,10 +163,10 @@ class DbRepositorySingleton:
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO weekly_player_stats (weekend_date, player_id, helps, stars)
-            VALUES (?, ?, ?, ?)
-            ON CONFLICT(weekend_date, player_id) DO UPDATE SET
-            helps = excluded.helps,
-            stars = excluded.stars
+                VALUES (?, ?, ?, ?)
+                    ON CONFLICT(weekend_date, player_id) DO UPDATE SET
+                        helps = excluded.helps,
+                        stars = excluded.stars
         """
         cursor.execute(insert_query, (weekend_date, player_id, helps, stars))
         self.connection.commit()
@@ -208,6 +279,8 @@ class DbRepositorySingleton:
         """
         Sets the score to 0 in the tournament_results table for players
         who are on the team (on_team = 1) but do not have a score for the given weekend_date.
+        If a record exists with a NULL score, it will be updated to 0.
+        If no record exists, a new one will be inserted with score = 0.
 
         :param conn: An open SQLite connection.
         :param weekend_date: The weekend date to filter (YYYY-MM-DD format).
@@ -218,12 +291,12 @@ class DbRepositorySingleton:
         SELECT p.id, ?, 0
         FROM players p
         WHERE p.on_team = 1
-        AND NOT EXISTS (
-            SELECT 1
-            FROM tournament_results tr
-            WHERE tr.player_id = p.id
-            AND tr.weekend_date = ? AND p.start_date <= ?
-        );
+        AND p.start_date <= ?
+        ON CONFLICT(weekend_date, player_id) DO UPDATE SET
+        score = CASE 
+            WHEN tournament_results.score IS NULL THEN 0
+            ELSE tournament_results.score
+        END;
         """
 
         try:
@@ -231,7 +304,7 @@ class DbRepositorySingleton:
             cursor = self.connection.cursor()
 
             # Execute the query with the specified weekend_date
-            cursor.execute(query, (weekend_date, weekend_date, weekend_date))
+            cursor.execute(query, (weekend_date, weekend_date))
 
             # Commit the changes
             self.connection.commit()

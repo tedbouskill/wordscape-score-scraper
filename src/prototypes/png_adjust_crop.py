@@ -1,9 +1,26 @@
+import logging
 import os
 import re
+import sys
 from PIL import Image
 
+try:
+    from cls_env_config import EnvConfigSingleton as EnvConfig
+    from cls_env_tools import EnvTools
+    from cls_logging_manager import LoggingManagerSingleton as LoggingManager
+except ImportError as e:
+    logging.error(f"Error importing required modules: {e}")
+    sys.exit(1)
+
+# Initialize the configuration settings here
+env_config = EnvConfig()
+
+repo_root = EnvTools.find_repo_root()
+
+print(f"Repository root found at: {repo_root}")
+
 # Define the relative subfolder path containing the images
-subfolder = os.path.join(os.path.dirname(__file__), "../process_screenshots/tournament_scores")
+subfolder = os.path.join(repo_root, "images/png_samples/weekend_scores")
 
 # List all PNG files in the subfolder
 png_files = [f for f in os.listdir(subfolder) if f.endswith('.png')]
@@ -34,7 +51,7 @@ with Image.open(image_path) as img:
 
     # Define the cropping area (x, y, width, height)
     # Adjust these values as needed to tune the OCR area
-    crop_area = (0, 1038, 1284, 2482)  # Example values
+    crop_area = (50, 1038, 1284, 2482)  # Example values
     cropped_img = img.crop(crop_area)
 
     # Show the cropped image to tune the area
