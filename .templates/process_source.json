@@ -1,0 +1,16 @@
+{
+    "os": {
+        "name": "Windows",
+        "version": "10.0.19045"
+    },
+    "device": "Dell XPS 15",
+    "runtime": {
+        "name": "Python",
+        "version": "3.11.2"
+    },
+    "application": {
+        "name": "PatentSyncScript",
+        "version": "1.2.3.4567"
+    },
+    "user": "service_account_xyz"
+}

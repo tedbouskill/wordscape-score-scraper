@@ -1,0 +1,4 @@
+INSERT INTO players (player_tag, on_team, is_active, start_date)
+ VALUES ('Cicu', 1, 1, '2025-10-31');
+ 
+--UPDATE players SET on_team = 0, is_active = 0, leave_date = '2025-02-21' WHERE id = 51

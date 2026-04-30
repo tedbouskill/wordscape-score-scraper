@@ -1,41 +1,42 @@
 {
-  "folders": [
-    {
-      "name": "WORDSCAPE-SCORE-SCRAPER",
-      "path": "."
-    },
-    {
-      "name": "MAC-ONLY",
-      "path": "mac-only"
+    "folders": [
+        {
+            "name": "WORDSCAPE-SCORE-SCRAPER",
+            "path": "."
+        },
+        {
+            "name": "MAC-ONLY",
+            "path": "mac-only"
+        }
+    ],
+    "settings": {
+        "terminal.integrated.env.linux": {
+            "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__;${workspaceFolder}/workspace_packages"
+        },
+        "terminal.integrated.env.windows": {
+            "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER/__workspace_packages__;${workspaceFolder}/workspace_packages"
+        },
+        "terminal.integrated.env.osx": {
+            "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__"
+        },
+        "powershell.cwd": "WORDSCAPE-SCORE-SCRAPER",
+        "search.exclude": {
+            "**/.venv/": true,
+            "**/samples/": true,
+            "**/tmp/": true
+        },
+        "python.envFile": "${workspaceFolder}/.env",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.terminal.executeInFileDir": true,
+        "python.terminal.focusAfterLaunch": true,
+        "python.terminal.launchArgs": [],
+        "python.defaultInterpreterPath": ".venv/bin/python"
     }
-  ],
-  "settings": {
-    "terminal.integrated.env.linux": {
-      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
-      "WORKSPACE_ROOT": "${workspaceFolder}",
-      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/repo_packages;${workspaceFolder}/workspace_packages"
-    },
-    "terminal.integrated.env.windows": {
-      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER",
-      "WORKSPACE_ROOT": "${workspaceFolder}",
-      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER/repo_packages;${workspaceFolder}/workspace_packages"
-    },
-    "terminal.integrated.env.osx": {
-      "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
-      "WORKSPACE_ROOT": "${workspaceFolder}",
-      "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/repo_packages;${workspaceFolder}/workspace_packages"
-    },
-    "powershell.cwd": "WORDSCAPE-SCORE-SCRAPER",
-    "search.exclude": {
-      "**/.venv/": true,
-      "**/samples/": true,
-      "**/tmp/": true
-    },
-    "python.envFile": "${workspaceFolder}/.env",
-    "python.terminal.activateEnvironment": true,
-    "python.terminal.activateEnvInCurrentTerminal": true,
-    "python.terminal.executeInFileDir": true,
-    "python.terminal.focusAfterLaunch": true,
-    "python.terminal.launchArgs": []
-  }
 }

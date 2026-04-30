@@ -1,0 +1,11 @@
+{
+    "pgServers": {
+        "sourcePostgres": "supabase",
+        "targetPostgresDev": "localhost",
+        "targetPostgresProd": "supabase"
+    },
+    "GoogleBaseFolders": {
+        "BigQueryBase": "/Volumes/BigData/BigQuery",
+        "BigQueryPatentsBase": "/Volumes/BigData/BigQuery/Patents"
+    }
+}

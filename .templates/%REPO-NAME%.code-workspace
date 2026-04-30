@@ -1,0 +1,59 @@
+{
+  "folders": [
+    {
+      "name": "%REPO-NAME%",
+      "path": "."
+    }
+  ],
+  "settings": {
+        "terminal.integrated.profiles.windows": {
+            "Windows PowerShell": {
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "args": [
+                    "-NoExit",
+                    "-Command",
+                    "& { . \"${workspaceFolder}/.venv/scripts/Activate.ps1\" }"
+                ]
+            },
+            "Custom PowerShell": {
+                "source": "PowerShell",
+                "icon": "terminal-powershell",
+                "args": [
+                    "-NoExit",
+                    "-Command",
+                    "& { . '${workspaceFolder:%REPO-NAME%}/.scripts/powershell/ProjectProfile.ps1' }"
+                ]
+            },
+            "PowerShell (No Profile)": {
+                "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "args": ["-NoProfile"]
+            }
+        },
+        "terminal.integrated.defaultProfile.windows": "Custom PowerShell",
+        "terminal.integrated.automationProfile.windows": {
+            "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": ["-NoProfile"]
+        },
+        "terminal.integrated.env.linux": {
+            "REPO_ROOT": "${workspaceFolder:%REPO-NAME%}",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:%REPO-NAME%}/__workspace_packages__;${workspaceFolder}/__project_packages__"
+        },
+        "terminal.integrated.env.windows": {
+            "REPO_ROOT": "${workspaceFolder:%REPO-NAME%}",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:%REPO-NAME%}/__workspace_packages__;${workspaceFolder}/__project_packages__"
+        },
+        "terminal.integrated.env.osx": {
+            "REPO_ROOT": "${workspaceFolder:%REPO-NAME%}",
+            "WORKSPACE_ROOT": "${workspaceFolder}",
+            "PYTHONPATH": "${workspaceFolder:%REPO-NAME%}/__workspace_packages__;${workspaceFolder}/__project_packages__"
+        },
+        "powershell.cwd": "%REPO-NAME%",
+        "search.exclude": {
+            "**/.venv/": true,
+            "**/samples/": true,
+            "**/tmp/": true
+        }
+    }
+}

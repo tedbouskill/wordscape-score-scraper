@@ -2,7 +2,11 @@ import sqlite3
 import pandas as pd
 
 # Connect to the SQLite database
+<<<<<<< HEAD
 conn = sqlite3.connect('../player_metrics.db')
+=======
+conn = sqlite3.connect('../../player_metrics.db')
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 
 # SQL Query to fetch data for the last six weeks and add the last weekend a player scored > 200
 query = """
@@ -22,7 +26,11 @@ player_scores AS (
         tr.weekend_date,
         tr.score
     FROM tournament_results AS tr
+<<<<<<< HEAD
     INNER JOIN players AS p ON tr.player_id = p.player_id
+=======
+    INNER JOIN players AS p ON tr.player_id = p.id
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
     WHERE p.on_team = 1
       AND tr.weekend_date IN (SELECT weekend_date FROM recent_tournaments)
 ),
@@ -42,7 +50,11 @@ player_averages_all_time AS (
         p.player_tag,
         AVG(tr.score) AS average_score_all_time
     FROM tournament_results AS tr
+<<<<<<< HEAD
     INNER JOIN players AS p ON tr.player_id = p.player_id
+=======
+    INNER JOIN players AS p ON tr.player_id = p.id
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
     WHERE p.on_team = 1
     GROUP BY tr.player_id, p.player_tag
 ),
@@ -66,7 +78,11 @@ FROM player_averages_recent AS p_recent
 INNER JOIN player_scores AS ps ON p_recent.player_id = ps.player_id
 INNER JOIN player_averages_all_time AS p_all_time ON p_recent.player_id = p_all_time.player_id
 LEFT JOIN last_200_plus AS lp ON p_recent.player_id = lp.player_id
+<<<<<<< HEAD
 WHERE p_recent.average_score_recent < 200
+=======
+WHERE p_recent.average_score_recent < 300
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 ORDER BY p_recent.player_tag, ps.weekend_date;
 """
 
