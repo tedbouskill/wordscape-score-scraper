@@ -12,18 +12,18 @@
     "settings": {
         "terminal.integrated.env.linux": {
             "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
-            "WORKSPACE_ROOT": "${workspaceFolder}",
-            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__;${workspaceFolder}/workspace_packages"
+            "WORKSPACE_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__:${workspaceFolder:MAC-ONLY}/workspace_packages"
         },
         "terminal.integrated.env.windows": {
-            "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER",
-            "WORKSPACE_ROOT": "${workspaceFolder}",
-            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER/__workspace_packages__;${workspaceFolder}/workspace_packages"
+            "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "WORKSPACE_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__;${workspaceFolder:MAC-ONLY}/workspace_packages"
         },
         "terminal.integrated.env.osx": {
             "REPO_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
-            "WORKSPACE_ROOT": "${workspaceFolder}",
-            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__"
+            "WORKSPACE_ROOT": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}",
+            "PYTHONPATH": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__:${workspaceFolder:MAC-ONLY}/workspace_packages"
         },
         "powershell.cwd": "WORDSCAPE-SCORE-SCRAPER",
         "search.exclude": {
@@ -31,12 +31,12 @@
             "**/samples/": true,
             "**/tmp/": true
         },
-        "python.envFile": "${workspaceFolder}/.env",
+        "python.envFile": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/.env",
         "python.terminal.activateEnvironment": true,
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.terminal.executeInFileDir": true,
         "python.terminal.focusAfterLaunch": true,
         "python.terminal.launchArgs": [],
-        "python.defaultInterpreterPath": ".venv/bin/python"
+        "python.defaultInterpreterPath": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/.venv/bin/python"
     }
 }

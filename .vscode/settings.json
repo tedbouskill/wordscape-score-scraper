@@ -14,13 +14,13 @@
             ]
         }
     },
-    "python.envFile": "${workspaceFolder:PRIME-FORGE}/.env",
+    "python.envFile": "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/.env",
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.terminal.executeInFileDir": true,
     "python.terminal.focusAfterLaunch": true,
     "python.terminal.launchArgs": [],
-    "python.defaultInterpreterPath": "${workspaceFolder:PRIME-FORGE}\\.venv\\.scripts\\python.exe",
+    "python.defaultInterpreterPath": ".venv/bin/python",
     "python.testing.pytestArgs": [
         "rust"
     ],
