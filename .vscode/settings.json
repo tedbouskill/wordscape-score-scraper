@@ -1,6 +1,10 @@
 {
     "python.analysis.autoImportCompletions": true,
     "python.analysis.extraPaths": [
+<<<<<<< HEAD
+        "${workspaceFolder}/repo_packages"
+    ]
+=======
         "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/__workspace_packages__",
         "${workspaceFolder:WORDSCAPE-SCORE-SCRAPER}/project_packages"
     ],
@@ -26,4 +30,5 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 }

@@ -56,11 +56,7 @@ copy_host_file() {
     local target_path=""
 
     if [ "$(uname)" == "Darwin" ]; then
-<<<<<<<< HEAD:scripts/shell/common.sh
         host_file="$repo_root/templates/config.[HOST-MAC].json"
-========
-        host_file="$repo_root/.templates/config.[HOST-MAC].json"
->>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:.scripts/shell/common.sh
         target_path="$repo_root/config.$(hostname).json"
     elif [ "$(uname)" == "Linux" ]; then
         echo "Unsupported OS: Linux"

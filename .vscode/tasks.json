@@ -40,13 +40,51 @@
             "problemMatcher": []
         },
         {
+<<<<<<< HEAD
+            "label": "Update Settings",
+            "type": "shell",
+            "command": "python",
+            "args": ["update_settings.py"],
+            "problemMatcher": [],
+            "runOptions": {
+                "runOn": "folderOpen"  // Automatically run when the workspace is opened
+            }
+        },
+        {
+            "label": "Run AppleScript",
+            "type": "shell",
+            "command": "osascript",
+            "args": [
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Setup Python Projects",
+=======
             "label": "Initalize Root Project",
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
             "type": "shell",
             "command": "echo",
             "args": [
                 "Initialize Root Projects..."
             ],
             "windows": {
+<<<<<<< HEAD
+                "command": ".\\scripts\\shell\\Add-Sub-Project.ps1",
+                "type": "shell"
+            },
+            "linux": {
+                "command": "./scripts/shell/add_sub_project.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "./scripts/shell/add_sub_project.sh",
+=======
                 "command": "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Initialize-Root-Project.ps1",
                 "type": "shell"
             },
@@ -56,6 +94,7 @@
             },
             "osx": {
                 "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_root_project.sh",
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -67,13 +106,28 @@
             }
         },
         {
+<<<<<<< HEAD
+            "label": "Initalize Projects",
+=======
             "label": "Initalize All Projects",
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
             "type": "shell",
             "command": "echo",
             "args": [
                 "Setting up Projects..."
             ],
             "windows": {
+<<<<<<< HEAD
+                "command": ".\\scripts\\powershell\\Initialize-Python-Projects.ps1",
+                "type": "shell"
+            },
+            "linux": {
+                "command": "./scripts/shell/setup_python_projects.sh",
+                "type": "shell"
+            },
+            "osx": {
+                "command": "./scripts/shell/setup_python_projects.sh",
+=======
                 "command": "${workspaceFolder:PRIME-FORGE}\\.scripts\\powershell\\Initialize-Python-Projects.ps1",
                 "type": "shell"
             },
@@ -83,6 +137,7 @@
             },
             "osx": {
                 "command": "${workspaceFolder:PRIME-FORGE}/.scripts/shell/setup_python_projects.sh",
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
                 "type": "shell"
             },
             "problemMatcher": [],
@@ -232,6 +287,33 @@
             "args": [
                 "${workspaceFolder:PRIME-FORGE}/.scripts/shell/make_docs.sh"
             ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            }
+        },
+        {
+            "label": "Update TODOs",
+            "type": "shell",
+            "command": "python",
+            "args": ["docs/update_todos.py"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Make Docs",
+            "type": "shell",
+            "command": "python",
+            "args": ["scripts/shell/update_todos.py"],
             "group": {
                 "kind": "build",
                 "isDefault": true

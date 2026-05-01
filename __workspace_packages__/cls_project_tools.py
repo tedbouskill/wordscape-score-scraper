@@ -8,17 +8,25 @@ from datetime import datetime, timedelta
 
 class ProjectTools:
     @staticmethod
+<<<<<<< HEAD:repo_packages/cls_project_tools.py
+    def get_img_files(directory: str, pattern='.png') -> list:
+=======
     def get_img_files(directory: str, pattern='.png', recursive: bool = False) -> list:
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_project_tools.py
 
         path = Path(directory)
         if (not path.exists()):
             logging.critical(f"Directory {directory} does not exist")
             return []
+<<<<<<< HEAD:repo_packages/cls_project_tools.py
+        files = [str(file) for file in path.rglob('*') if fnmatch.fnmatch(file.suffix.lower(), pattern.lower())]
+=======
         
         if recursive:
             files = [str(file) for file in path.rglob('*') if fnmatch.fnmatch(file.suffix.lower(), pattern.lower())]
         else:
             files = [str(file) for file in path.glob('*') if fnmatch.fnmatch(file.suffix.lower(), pattern.lower())]
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_project_tools.py
 
         return files
 
@@ -61,6 +69,11 @@ class ProjectTools:
     def get_weekend_dates(file_date_str: str) -> tuple:
         """
         Calculate the weekend date (Sunday) and the Friday date for a given tournament date.
+<<<<<<< HEAD:repo_packages/cls_project_tools.py
+        """
+        tournament_date = datetime.strptime(file_date_str, "%Y-%m-%d")
+        sunday_date = tournament_date + timedelta(days=(6 - tournament_date.weekday()))
+=======
         Tournament runs Friday-Sunday. Returns the Sunday of the tournament weekend:
         - If screenshot is Fri-Sun: returns the upcoming/current Sunday
         - If screenshot is Mon-Thu: returns the previous Sunday
@@ -77,6 +90,7 @@ class ProjectTools:
             days_forward = 6 - weekday
             sunday_date = tournament_date + timedelta(days=days_forward)
         
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_project_tools.py
         friday_date = sunday_date - timedelta(days=2)
 
         return sunday_date.strftime("%Y-%m-%d"), friday_date.strftime("%Y-%m-%d")

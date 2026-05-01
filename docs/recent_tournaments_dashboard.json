@@ -2,9 +2,15 @@
     {
         "Player": "weeminx",
         "Min Stars": 0,
+<<<<<<< HEAD
+        "Avg Stars": 6455.0,
+        "Max Stars": 14030,
+        "Recent Stars": 7465,
+=======
         "Avg Stars": 6753.0,
         "Max Stars": 14030,
         "Recent Stars": 7595,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Min Rank": 31,
         "Avg Rank": 7.0,
         "Max Rank": 1,
@@ -13,6 +19,16 @@
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "Siley",
+        "Min Stars": 3193,
+        "Avg Stars": 4472.0,
+        "Max Stars": 6699,
+        "Recent Stars": 6699,
+        "Min Rank": 8,
+        "Avg Rank": 4.0,
+        "Max Rank": 1,
+=======
         "Player": "Dewey",
         "Min Stars": 2242,
         "Avg Stars": 4222.0,
@@ -21,11 +37,22 @@
         "Min Rank": 12,
         "Avg Rank": 5.0,
         "Max Rank": 2,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Recent Rank": 2,
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "Dewey",
+        "Min Stars": 2242,
+        "Avg Stars": 3976.0,
+        "Max Stars": 6582,
+        "Recent Stars": 4675,
+        "Min Rank": 12,
+        "Avg Rank": 5.0,
+        "Max Rank": 2,
+=======
         "Player": "Siley",
         "Min Stars": 3193,
         "Avg Stars": 4498.0,
@@ -34,11 +61,24 @@
         "Min Rank": 8,
         "Avg Rank": 4.0,
         "Max Rank": 1,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Recent Rank": 3,
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "Mary",
+        "Min Stars": 3588,
+        "Avg Stars": 3948.0,
+        "Max Stars": 4453,
+        "Recent Stars": 3803,
+        "Min Rank": 6,
+        "Avg Rank": 5.0,
+        "Max Rank": 4,
+        "Recent Rank": 4,
+        "Weekends Played": 3,
+=======
         "Player": "Sienna",
         "Min Stars": 4629,
         "Avg Stars": 4629.0,
@@ -49,22 +89,54 @@
         "Max Rank": 4,
         "Recent Rank": 4,
         "Weekends Played": 1,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Skipped": 0
     },
     {
         "Player": "zmewis",
         "Min Stars": 2407,
+<<<<<<< HEAD
+        "Avg Stars": 4026.0,
+        "Max Stars": 8000,
+        "Recent Stars": 3437,
+        "Min Rank": 12,
+        "Avg Rank": 6.0,
+=======
         "Avg Stars": 4087.0,
         "Max Stars": 8000,
         "Recent Stars": 3323,
         "Min Rank": 12,
         "Avg Rank": 5.0,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Max Rank": 1,
         "Recent Rank": 5,
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "BurpALot",
+        "Min Stars": 477,
+        "Avg Stars": 1386.0,
+        "Max Stars": 3232,
+        "Recent Stars": 3232,
+        "Min Rank": 27,
+        "Avg Rank": 20.0,
+        "Max Rank": 6,
+        "Recent Rank": 6,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Mar",
+        "Min Stars": 2343,
+        "Avg Stars": 3280.0,
+        "Max Stars": 3781,
+        "Recent Stars": 3185,
+        "Min Rank": 12,
+        "Avg Rank": 8.0,
+        "Max Rank": 5,
+=======
         "Player": "Soggy",
         "Min Stars": 3257,
         "Avg Stars": 3257.0,
@@ -86,6 +158,7 @@
         "Min Rank": 16,
         "Avg Rank": 9.0,
         "Max Rank": 3,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Recent Rank": 7,
         "Weekends Played": 13,
         "Weekends Skipped": 0
@@ -93,9 +166,15 @@
     {
         "Player": "gardener",
         "Min Stars": 2334,
+<<<<<<< HEAD
+        "Avg Stars": 3188.0,
+        "Max Stars": 4155,
+        "Recent Stars": 3184,
+=======
         "Avg Stars": 3221.0,
         "Max Stars": 4155,
         "Recent Stars": 3027,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Min Rank": 11,
         "Avg Rank": 8.0,
         "Max Rank": 4,
@@ -104,6 +183,15 @@
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "Jay",
+        "Min Stars": 1315,
+        "Avg Stars": 2903.0,
+        "Max Stars": 4635,
+        "Recent Stars": 3112,
+        "Min Rank": 17,
+        "Avg Rank": 9.0,
+=======
         "Player": "springerpup",
         "Min Stars": 1883,
         "Avg Stars": 2764.0,
@@ -111,6 +199,7 @@
         "Recent Stars": 3012,
         "Min Rank": 17,
         "Avg Rank": 11.0,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Max Rank": 3,
         "Recent Rank": 9,
         "Weekends Played": 13,
@@ -119,9 +208,15 @@
     {
         "Player": "Suriel",
         "Min Stars": 2221,
+<<<<<<< HEAD
+        "Avg Stars": 2957.0,
+        "Max Stars": 3696,
+        "Recent Stars": 3058,
+=======
         "Avg Stars": 2962.0,
         "Max Stars": 3696,
         "Recent Stars": 2914,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Min Rank": 12,
         "Avg Rank": 9.0,
         "Max Rank": 3,
@@ -130,6 +225,43 @@
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "tedbilly",
+        "Min Stars": 868,
+        "Avg Stars": 3685.0,
+        "Max Stars": 6045,
+        "Recent Stars": 2805,
+        "Min Rank": 24,
+        "Avg Rank": 8.0,
+        "Max Rank": 1,
+        "Recent Rank": 11,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Laura",
+        "Min Stars": 583,
+        "Avg Stars": 1179.0,
+        "Max Stars": 2635,
+        "Recent Stars": 2635,
+        "Min Rank": 27,
+        "Avg Rank": 21.0,
+        "Max Rank": 12,
+        "Recent Rank": 12,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Grandmaphyll",
+        "Min Stars": 306,
+        "Avg Stars": 1008.0,
+        "Max Stars": 2540,
+        "Recent Stars": 2540,
+        "Min Rank": 33,
+        "Avg Rank": 23.0,
+        "Max Rank": 13,
+        "Recent Rank": 13,
+=======
         "Player": "Cheech",
         "Min Stars": 494,
         "Avg Stars": 1367.0,
@@ -139,12 +271,48 @@
         "Avg Rank": 21.0,
         "Max Rank": 11,
         "Recent Rank": 11,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
         "Player": "fin",
         "Min Stars": 1593,
+<<<<<<< HEAD
+        "Avg Stars": 2582.0,
+        "Max Stars": 3145,
+        "Recent Stars": 2459,
+        "Min Rank": 22,
+        "Avg Rank": 13.0,
+        "Max Rank": 7,
+        "Recent Rank": 14,
+        "Weekends Played": 4,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "springerpup",
+        "Min Stars": 1883,
+        "Avg Stars": 2756.0,
+        "Max Stars": 4037,
+        "Recent Stars": 2406,
+        "Min Rank": 17,
+        "Avg Rank": 10.0,
+        "Max Rank": 3,
+        "Recent Rank": 15,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Stranger",
+        "Min Stars": 668,
+        "Avg Stars": 3698.0,
+        "Max Stars": 8063,
+        "Recent Stars": 2262,
+        "Min Rank": 23,
+        "Avg Rank": 8.0,
+        "Max Rank": 2,
+        "Recent Rank": 16,
+=======
         "Avg Stars": 2630.0,
         "Max Stars": 3145,
         "Recent Stars": 2824,
@@ -165,10 +333,22 @@
         "Avg Rank": 8.0,
         "Max Rank": 5,
         "Recent Rank": 13,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "Pop",
+        "Min Stars": 603,
+        "Avg Stars": 1557.0,
+        "Max Stars": 3663,
+        "Recent Stars": 2233,
+        "Min Rank": 31,
+        "Avg Rank": 19.0,
+        "Max Rank": 6,
+        "Recent Rank": 17,
+=======
         "Player": "BurpALot",
         "Min Stars": 477,
         "Avg Stars": 1522.0,
@@ -178,10 +358,230 @@
         "Avg Rank": 19.0,
         "Max Rank": 6,
         "Recent Rank": 14,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
+<<<<<<< HEAD
+        "Player": "JoCo",
+        "Min Stars": 901,
+        "Avg Stars": 2850.0,
+        "Max Stars": 5805,
+        "Recent Stars": 2040,
+        "Min Rank": 27,
+        "Avg Rank": 11.0,
+        "Max Rank": 3,
+        "Recent Rank": 18,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "cariann",
+        "Min Stars": 115,
+        "Avg Stars": 1904.0,
+        "Max Stars": 3778,
+        "Recent Stars": 1863,
+        "Min Rank": 30,
+        "Avg Rank": 15.0,
+        "Max Rank": 4,
+        "Recent Rank": 19,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Angela",
+        "Min Stars": 1025,
+        "Avg Stars": 1701.0,
+        "Max Stars": 2500,
+        "Recent Stars": 1860,
+        "Min Rank": 23,
+        "Avg Rank": 19.0,
+        "Max Rank": 13,
+        "Recent Rank": 20,
+        "Weekends Played": 6,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "marbl",
+        "Min Stars": 861,
+        "Avg Stars": 1336.0,
+        "Max Stars": 2062,
+        "Recent Stars": 1790,
+        "Min Rank": 23,
+        "Avg Rank": 19.0,
+        "Max Rank": 14,
+        "Recent Rank": 21,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "mike",
+        "Min Stars": 902,
+        "Avg Stars": 1373.0,
+        "Max Stars": 1849,
+        "Recent Stars": 1598,
+        "Min Rank": 27,
+        "Avg Rank": 19.0,
+        "Max Rank": 15,
+        "Recent Rank": 22,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Wilbur",
+        "Min Stars": 1465,
+        "Avg Stars": 2022.0,
+        "Max Stars": 3062,
+        "Recent Stars": 1472,
+        "Min Rank": 23,
+        "Avg Rank": 17.0,
+        "Max Rank": 8,
+        "Recent Rank": 23,
+        "Weekends Played": 5,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "spudly",
+        "Min Stars": 899,
+        "Avg Stars": 1727.0,
+        "Max Stars": 2579,
+        "Recent Stars": 1350,
+        "Min Rank": 24,
+        "Avg Rank": 16.0,
+        "Max Rank": 12,
+        "Recent Rank": 24,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Cheech",
+        "Min Stars": 494,
+        "Avg Stars": 1211.0,
+        "Max Stars": 2298,
+        "Recent Stars": 1062,
+        "Min Rank": 30,
+        "Avg Rank": 21.0,
+        "Max Rank": 13,
+        "Recent Rank": 25,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "nvk",
+        "Min Stars": 53,
+        "Avg Stars": 337.0,
+        "Max Stars": 1032,
+        "Recent Stars": 1032,
+        "Min Rank": 35,
+        "Avg Rank": 30.0,
+        "Max Rank": 26,
+        "Recent Rank": 26,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Trick",
+        "Min Stars": 0,
+        "Avg Stars": 487.0,
+        "Max Stars": 1090,
+        "Recent Stars": 776,
+        "Min Rank": 32,
+        "Avg Rank": 28.0,
+        "Max Rank": 21,
+        "Recent Rank": 27,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "justme",
+        "Min Stars": 168,
+        "Avg Stars": 502.0,
+        "Max Stars": 862,
+        "Recent Stars": 556,
+        "Min Rank": 31,
+        "Avg Rank": 28.0,
+        "Max Rank": 25,
+        "Recent Rank": 28,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Quinn",
+        "Min Stars": 0,
+        "Avg Stars": 918.0,
+        "Max Stars": 2455,
+        "Recent Stars": 523,
+        "Min Rank": 34,
+        "Avg Rank": 25.0,
+        "Max Rank": 11,
+        "Recent Rank": 29,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "giddyupjenny",
+        "Min Stars": 0,
+        "Avg Stars": 346.0,
+        "Max Stars": 1396,
+        "Recent Stars": 515,
+        "Min Rank": 35,
+        "Avg Rank": 30.0,
+        "Max Rank": 14,
+        "Recent Rank": 30,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "Murphy",
+        "Min Stars": 349,
+        "Avg Stars": 1454.0,
+        "Max Stars": 2161,
+        "Recent Stars": 349,
+        "Min Rank": 31,
+        "Avg Rank": 18.0,
+        "Max Rank": 11,
+        "Recent Rank": 31,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "hunny",
+        "Min Stars": 110,
+        "Avg Stars": 292.0,
+        "Max Stars": 526,
+        "Recent Stars": 295,
+        "Min Rank": 34,
+        "Avg Rank": 31.0,
+        "Max Rank": 25,
+        "Recent Rank": 32,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "chibong",
+        "Min Stars": 0,
+        "Avg Stars": 675.0,
+        "Max Stars": 4317,
+        "Recent Stars": 166,
+        "Min Rank": 36,
+        "Avg Rank": 27.0,
+        "Max Rank": 3,
+        "Recent Rank": 33,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+    },
+    {
+        "Player": "kay",
+        "Min Stars": 75,
+        "Avg Stars": 1181.0,
+        "Max Stars": 2671,
+        "Recent Stars": 75,
+        "Min Rank": 34,
+        "Avg Rank": 21.0,
+        "Max Rank": 10,
+        "Recent Rank": 34,
+=======
         "Player": "spudly",
         "Min Stars": 899,
         "Avg Stars": 1744.0,
@@ -191,12 +591,22 @@
         "Avg Rank": 16.0,
         "Max Rank": 12,
         "Recent Rank": 15,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
         "Player": "Ami",
         "Min Stars": 38,
+<<<<<<< HEAD
+        "Avg Stars": 1055.0,
+        "Max Stars": 2125,
+        "Recent Stars": 38,
+        "Min Rank": 35,
+        "Avg Rank": 22.0,
+        "Max Rank": 13,
+        "Recent Rank": 35,
+=======
         "Avg Stars": 1122.0,
         "Max Stars": 2125,
         "Recent Stars": 1937,
@@ -360,12 +770,22 @@
         "Avg Rank": 23.0,
         "Max Rank": 13,
         "Recent Rank": 28,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
     {
         "Player": "akp",
         "Min Stars": 0,
+<<<<<<< HEAD
+        "Avg Stars": 554.0,
+        "Max Stars": 886,
+        "Recent Stars": 12,
+        "Min Rank": 36,
+        "Avg Rank": 28.0,
+        "Max Rank": 19,
+        "Recent Rank": 36,
+=======
         "Avg Stars": 560.0,
         "Max Stars": 886,
         "Recent Stars": 739,
@@ -451,6 +871,7 @@
         "Avg Rank": 22.0,
         "Max Rank": 10,
         "Recent Rank": 35,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
@@ -463,6 +884,9 @@
         "Min Rank": 37,
         "Avg Rank": 34.0,
         "Max Rank": 30,
+<<<<<<< HEAD
+        "Recent Rank": 37,
+=======
         "Recent Rank": 36,
         "Weekends Played": 13,
         "Weekends Skipped": 0
@@ -490,6 +914,7 @@
         "Avg Rank": 28.0,
         "Max Rank": 3,
         "Recent Rank": 36,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
@@ -502,6 +927,9 @@
         "Min Rank": 37,
         "Avg Rank": 34.0,
         "Max Rank": 30,
+<<<<<<< HEAD
+        "Recent Rank": 37,
+=======
         "Recent Rank": 36,
         "Weekends Played": 13,
         "Weekends Skipped": 0
@@ -516,6 +944,7 @@
         "Avg Rank": 20.0,
         "Max Rank": 14,
         "Recent Rank": 36,
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
         "Weekends Played": 13,
         "Weekends Skipped": 0
     },
@@ -528,6 +957,11 @@
         "Min Rank": 37,
         "Avg Rank": 34.0,
         "Max Rank": 30,
+<<<<<<< HEAD
+        "Recent Rank": 37,
+        "Weekends Played": 13,
+        "Weekends Skipped": 0
+=======
         "Recent Rank": 36,
         "Weekends Played": 13,
         "Weekends Skipped": 0
@@ -544,5 +978,6 @@
         "Recent Rank": 36,
         "Weekends Played": 7,
         "Weekends Skipped": 0
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
     }
 ]

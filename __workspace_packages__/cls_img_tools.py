@@ -44,6 +44,8 @@ class ImageTools:
         return output
 
     @staticmethod
+<<<<<<< HEAD:repo_packages/cls_img_tools.py
+=======
     def isolate_dark_text_opencv(image: np.ndarray, threshold=127) -> np.ndarray:
         """
         Isolate dark text (like brown) on lighter backgrounds (like yellow star or light blue).
@@ -70,6 +72,7 @@ class ImageTools:
         return output
 
     @staticmethod
+>>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_img_tools.py
     def remove_everything_but_white(image, threshold=250):
         """
         Remove everything but white from an image.
