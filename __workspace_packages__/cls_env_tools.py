@@ -35,25 +35,15 @@ class EnvTools:
     @staticmethod
     def load_settings(json_file, file_path=None):
         if file_path is None:
-<<<<<<< HEAD:repo_packages/cls_env_tools.py
-            repo_root = EnvTools.find_repo_root()
-            if repo_root is None:
-=======
             file_path = EnvTools.find_repo_root()
             if file_path is None:
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_env_tools.py
                 logging.critical("Repository root not found.")
                 return None
 
         # Check if the configuration file exists, then load it
-<<<<<<< HEAD:repo_packages/cls_env_tools.py
-        if not os.path.exists(file_path):
-            logging.debug(f"Settings file {file_path} not found at {file_path}")
-=======
         full_path = file_path / json_file
         if not os.path.exists(full_path):
             logging.debug(f"Settings file {full_path} not found")
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_env_tools.py
             return None
 
         with open(full_path, 'r') as file:

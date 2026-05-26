@@ -3,7 +3,6 @@ import sqlite3
 import threading
 
 from datetime import datetime
-from venv import logger
 
 def validate_and_format_date(date_str):
     """
@@ -55,10 +54,7 @@ class DbRepositorySingleton:
     def upsert_weekend_player_score(self, weekend_date, player_id, score):
         """
         Insert or update extracted data into SQLite database.
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-=======
         Prioritizes non-zero scores: only updates if the new score is non-zero OR if the existing score is zero.
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         """
         weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
@@ -66,15 +62,11 @@ class DbRepositorySingleton:
             INSERT INTO tournament_results (weekend_date, player_id, score)
             VALUES (?, ?, ?)
             ON CONFLICT(weekend_date, player_id) DO UPDATE SET
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-            score = excluded.score
-=======
             score = CASE 
                 WHEN excluded.score != 0 THEN excluded.score
                 WHEN tournament_results.score = 0 THEN excluded.score
                 ELSE tournament_results.score
             END
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         """
         cursor.execute(insert_query, (weekend_date, player_id, score))
         self.connection.commit()
@@ -96,8 +88,6 @@ class DbRepositorySingleton:
 
         return
 
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-=======
     def upsert_weekend_team_rank(self, weekend_date, rank):
         """
         Insert or update team rank for a weekend date in SQLite database.
@@ -123,13 +113,12 @@ class DbRepositorySingleton:
         weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """UPDATE team_tournament_results SET team_score = ? WHERE weekend_date = ?"""
-        cursor.execute(insert_query, (weekend_date, score))
+        cursor.execute(insert_query, (score, weekend_date))
         self.connection.commit()
 
         return
 
     def upsert_weekend_team_scores(self):
-        weekend_date = validate_and_format_date(weekend_date)
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO team_tournament_results (weekend_date, team_score)
@@ -164,7 +153,6 @@ class DbRepositorySingleton:
 
         return
 
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
     def upsert_weekly_player_stats(self, weekend_date, player_id, helps, stars):
         """
         Insert or update extracted data into SQLite database.
@@ -173,17 +161,10 @@ class DbRepositorySingleton:
         cursor = self.connection.cursor()
         insert_query = """
             INSERT INTO weekly_player_stats (weekend_date, player_id, helps, stars)
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-            VALUES (?, ?, ?, ?)
-            ON CONFLICT(weekend_date, player_id) DO UPDATE SET
-            helps = excluded.helps,
-            stars = excluded.stars
-=======
                 VALUES (?, ?, ?, ?)
                     ON CONFLICT(weekend_date, player_id) DO UPDATE SET
                         helps = excluded.helps,
                         stars = excluded.stars
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         """
         cursor.execute(insert_query, (weekend_date, player_id, helps, stars))
         self.connection.commit()
@@ -192,11 +173,7 @@ class DbRepositorySingleton:
 
     def get_player_id(self, player_tag):
         cursor = self.connection.cursor()
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-        cursor.execute("SELECT id FROM players WHERE player_tag = ?", (player_tag,))
-=======
         cursor.execute("SELECT id FROM players WHERE LOWER(player_tag) = LOWER(?)", (player_tag,))
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         row = cursor.fetchone()
         if row:
             player_id = row[0]
@@ -217,12 +194,9 @@ class DbRepositorySingleton:
         player_id = cursor.lastrowid
         self.connection.commit()
 
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-=======
         self.set_player_on_team(player_id)  # Set the player on the team after creation
         self.set_player_active(player_id)  # Set the player as active after creation
 
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         return player_id
 
     def get_players(self):
@@ -303,11 +277,8 @@ class DbRepositorySingleton:
         """
         Sets the score to 0 in the tournament_results table for players
         who are on the team (on_team = 1) but do not have a score for the given weekend_date.
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-=======
         If a record exists with a NULL score, it will be updated to 0.
         If no record exists, a new one will be inserted with score = 0.
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
 
         :param conn: An open SQLite connection.
         :param weekend_date: The weekend date to filter (YYYY-MM-DD format).
@@ -318,21 +289,12 @@ class DbRepositorySingleton:
         SELECT p.id, ?, 0
         FROM players p
         WHERE p.on_team = 1
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-        AND NOT EXISTS (
-            SELECT 1
-            FROM tournament_results tr
-            WHERE tr.player_id = p.id
-            AND tr.weekend_date = ? AND p.start_date <= ?
-        );
-=======
         AND p.start_date <= ?
         ON CONFLICT(weekend_date, player_id) DO UPDATE SET
         score = CASE 
             WHEN tournament_results.score IS NULL THEN 0
             ELSE tournament_results.score
         END;
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         """
 
         try:
@@ -340,17 +302,13 @@ class DbRepositorySingleton:
             cursor = self.connection.cursor()
 
             # Execute the query with the specified weekend_date
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-            cursor.execute(query, (weekend_date, weekend_date, weekend_date))
-=======
             cursor.execute(query, (weekend_date, weekend_date))
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
 
             # Commit the changes
             self.connection.commit()
 
         except sqlite3.Error as e:
-            logger.critical(f"An error occurred: {e}")
+            logging.critical(f"An error occurred: {e}")
 
     def update_player_start_date(self, player_id, start_date):
         """
@@ -384,13 +342,7 @@ class DbRepositorySingleton:
         )
         UPDATE tournament_results
         SET rank = (
-<<<<<<< HEAD:repo_packages/cls_db_tools.py
-            SELECT calculated_rank
-            FROM ranked_results
-            WHERE ranked_results.player_id = tournament_results.player_id
-=======
             SELECT calculated_rank FROM ranked_results WHERE ranked_results.player_id = tournament_results.player_id
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53:__workspace_packages__/cls_db_tools.py
         )
         WHERE weekend_date = ?;
         """

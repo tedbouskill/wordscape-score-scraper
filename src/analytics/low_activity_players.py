@@ -5,20 +5,11 @@ import sys
 
 import pandas as pd
 
-<<<<<<< HEAD
 try:
     from cls_env_tools import EnvTools
 except ImportError as e:
     logging.error(f"Error importing required modules: {e}")
     sys.exit(1)
-=======
-# Connect to the SQLite database
-<<<<<<< HEAD
-conn = sqlite3.connect('../player_metrics.db')
-=======
-conn = sqlite3.connect('../../player_metrics.db')
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
->>>>>>> origin/main
 
 
 def _normalize_player_tags(tags):
@@ -215,7 +206,6 @@ def get_low_activity_report(
         LEFT JOIN last_played AS lp ON tp.id = lp.player_id
     )
     SELECT
-<<<<<<< HEAD
         "Player",
         "Lifetime Avg",
         "Lifetime Played",
@@ -257,72 +247,6 @@ def get_low_activity_report(
         "6-Mo Avg" ASC,
         "Lifetime Avg" ASC;
     """
-=======
-        tr.player_id,
-        p.player_tag,
-        tr.weekend_date,
-        tr.score
-    FROM tournament_results AS tr
-<<<<<<< HEAD
-    INNER JOIN players AS p ON tr.player_id = p.player_id
-=======
-    INNER JOIN players AS p ON tr.player_id = p.id
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
-    WHERE p.on_team = 1
-      AND tr.weekend_date IN (SELECT weekend_date FROM recent_tournaments)
-),
-player_averages_recent AS (
-    -- Calculate the average score over the last 6 weeks (excluding the most recent week)
-    SELECT
-        ps.player_id,
-        ps.player_tag,
-        AVG(ps.score) AS average_score_recent
-    FROM player_scores AS ps
-    GROUP BY ps.player_id, ps.player_tag
-),
-player_averages_all_time AS (
-    -- Calculate the all-time average score for each player
-    SELECT
-        tr.player_id,
-        p.player_tag,
-        AVG(tr.score) AS average_score_all_time
-    FROM tournament_results AS tr
-<<<<<<< HEAD
-    INNER JOIN players AS p ON tr.player_id = p.player_id
-=======
-    INNER JOIN players AS p ON tr.player_id = p.id
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
-    WHERE p.on_team = 1
-    GROUP BY tr.player_id, p.player_tag
-),
-last_200_plus AS (
-    -- Find the last weekend each player scored more than 200
-    SELECT
-        tr.player_id,
-        MAX(tr.weekend_date) AS last_200_plus_weekend
-    FROM tournament_results AS tr
-    WHERE tr.score > 200
-    GROUP BY tr.player_id
-)
-SELECT
-    p_recent.player_tag,
-    p_recent.average_score_recent,
-    p_all_time.average_score_all_time,
-    ps.weekend_date,
-    ps.score,
-    COALESCE(lp.last_200_plus_weekend, 'Never') AS last_200_plus_weekend
-FROM player_averages_recent AS p_recent
-INNER JOIN player_scores AS ps ON p_recent.player_id = ps.player_id
-INNER JOIN player_averages_all_time AS p_all_time ON p_recent.player_id = p_all_time.player_id
-LEFT JOIN last_200_plus AS lp ON p_recent.player_id = lp.player_id
-<<<<<<< HEAD
-WHERE p_recent.average_score_recent < 200
-=======
-WHERE p_recent.average_score_recent < 300
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
-ORDER BY p_recent.player_tag, ps.weekend_date;
-"""
->>>>>>> origin/main
 
     params.extend([
         int(min_tenure_weeks),

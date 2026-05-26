@@ -5,25 +5,12 @@ import sys
 from datetime import datetime, timedelta
 from osxphotos import PhotosDB
 
-<<<<<<< HEAD
-
-=======
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 # Set up root logger configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Get the script name without the extension
 script_name = os.path.splitext(os.path.basename(__file__))[0]
 script_dir = os.path.dirname(os.path.abspath(__file__))
-
-<<<<<<< HEAD
-=======
-# Adjust sys.path to include workspace packages
-#repo_root = os.path.abspath(os.path.join(script_dir, '..', '..', '..'))
-#workspace_packages_path = os.path.join(repo_root, '__workspace_packages__')
-#if workspace_packages_path not in sys.path:
-#    sys.path.insert(0, workspace_packages_path)
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 
 try:
     from cls_env_config import EnvConfigSingleton as EnvConfig
@@ -33,11 +20,8 @@ except ImportError as e:
     logging.error(f"Error importing required modules: {e}")
     sys.exit(1)
 
-<<<<<<< HEAD
-=======
 # Initialize the configuration settings here
 env_config = EnvConfig()
->>>>>>> bc82a28aaf306b45a51bca175410bffb23322f53
 
 logging_manager = None
 
@@ -47,9 +31,8 @@ except Exception as e:
     logging.exception(f"Error initializing LoggingManager: {e}")
     sys.exit(1)
 
-
 def get_previous_sunday(date):
-    """f
+    """
     Calculate the Sunday preceding or equal to the given date.
     """
     return date - timedelta(days=date.weekday() + 1 if date.weekday() != 6 else 0)
