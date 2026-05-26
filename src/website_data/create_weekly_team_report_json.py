@@ -64,37 +64,59 @@ def generate_weekend_report(db_path, json_path, weekend_date=None):
         weekend_date = c.fetchone()[0]
 
 
-    # --- Find the previous weekend date ---
+    # --- Find the most recent, previous, and highest-scoring team weekends ---
     c.execute(
-        """ SELECT weekend_date, team_score, team_rank, score_rank
-            FROM (
-                SELECT *, RANK() OVER (ORDER BY team_score DESC) AS score_rank
-                FROM team_tournament_results WHERE weekend_date <= ?
-            ) ranked
-            WHERE score_rank <= 2;
+        """
+            SELECT weekend_date, team_score, team_rank
+            FROM team_tournament_results
+            WHERE weekend_date <= ?
+            ORDER BY weekend_date DESC
+            LIMIT 1
         """,
         (weekend_date,)
     )
     recent_weekend = c.fetchone()
+
+    c.execute(
+        """
+            SELECT weekend_date, team_score, team_rank
+            FROM team_tournament_results
+            WHERE weekend_date < ?
+            ORDER BY weekend_date DESC
+            LIMIT 1
+        """,
+        (weekend_date,)
+    )
+    previous_weekend = c.fetchone()
+
+    c.execute(
+        """
+            SELECT weekend_date, team_score, team_rank
+            FROM team_tournament_results
+            ORDER BY team_score DESC, weekend_date DESC
+            LIMIT 1
+        """
+    )
     max_weekend = c.fetchone()
+
+    if recent_weekend is None:
+        raise ValueError(f"No team tournament results found on or before {weekend_date}")
 
     recent_team_score = recent_weekend[1]
     recent_team_rank = recent_weekend[2]
 
-    max_team_score = max_weekend[1]
-    max_team_score_rank = max_weekend[2] or 0
+    max_team_score = max_weekend[1] if max_weekend else recent_team_score
+    max_team_score_rank = max_weekend[2] if max_weekend and max_weekend[2] is not None else 0
 
     # --- Compute total player score for the recent tournament ---
-    c.execute(
-        "SELECT team_score, team_rank FROM team_tournament_results WHERE weekend_date < ? ORDER BY weekend_date DESC LIMIT 1",
-        (weekend_date,)
-    )
-    previous_weekend = c.fetchone()
-    previous_team_score = previous_weekend[0]
-    previous_team_rank = previous_weekend[1]
+    previous_team_score = previous_weekend[1] if previous_weekend else recent_team_score
+    previous_team_rank = previous_weekend[2] if previous_weekend else recent_team_rank
 
     # --- Compute percentage difference relative to the previous tournament ---
-    percent_diff_total = round(((recent_team_score - previous_team_score) / previous_team_score * 100), 1)
+    if previous_team_score:
+        percent_diff_total = round(((recent_team_score - previous_team_score) / previous_team_score * 100), 1)
+    else:
+        percent_diff_total = 0.0
 
     # --- Get top three players for the recent tournament ---
     # Only include players that are on the team (on_team = 1) and have a nonzero score.

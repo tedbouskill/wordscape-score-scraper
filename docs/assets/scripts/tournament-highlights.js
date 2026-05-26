@@ -1,5 +1,5 @@
 // Fetch the JSON report and generate both the summary and the top players table
-fetch('last_weekend_report.json')
+fetch(getReportUrl())
     .then(response => response.json())
     .then(data => {
         // --- Existing Summary Code ---

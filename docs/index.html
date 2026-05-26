@@ -62,7 +62,7 @@
     <div id="footer"></div>
 
     <script>
-        fetch('last_weekend_report.json')
+        fetch(getReportUrl())
             .then(response => response.json())
             .then(data => {
                 const highScores = data.players_exceeded_past_top;
@@ -105,7 +105,7 @@
     </script>
 
     <script>
-        fetch('last_weekend_report.json')
+        fetch(getReportUrl())
             .then(response => response.json())
             .then(data => {
                 const aboveAvgPlayers = data.players_exceeded_lifetime_avg;

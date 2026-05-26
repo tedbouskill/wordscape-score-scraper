@@ -1,4 +1,11 @@
 // Component Loading Functions
+function getReportUrl() {
+    if (!window.__weekendReportVersion) {
+        window.__weekendReportVersion = Date.now();
+    }
+    return `last_weekend_report.json?v=${window.__weekendReportVersion}`;
+}
+
 function loadComponents() {
     loadHeader();
     loadFooter();
@@ -39,7 +46,7 @@ function updateHeaderState() {
         currentLink.classList.add('text-blue-300', 'font-bold', 'bg-slate-600', 'px-3', 'py-1', 'rounded');
     }
 
-    fetch('last_weekend_report.json')
+        fetch(getReportUrl())
       .then(response => response.json())
       .then(data => {
         const weekendDateEl = document.getElementById('weekend-date');
