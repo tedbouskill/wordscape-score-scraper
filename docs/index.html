@@ -75,6 +75,12 @@
             .then(response => response.json())
             .then(data => {
                 const rankEmojis = { '#1': '🥇', '#2': '🥈', '#3': '🥉' };
+
+                function formatDate(dateStr) {
+                    const [year, month, day] = dateStr.split('-').map(Number);
+                    return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+
                 let html = '';
 
                 // --- Top 5 Team Scores ---
@@ -82,7 +88,7 @@
                 html += `<table class="w-full border-collapse mb-4">`;
                 data.top_team_scores.forEach(row => {
                     html += `<tr class="border-t">
-              <td class="py-1 text-left">${row.weekend_date}</td>
+              <td class="py-1 text-left">${formatDate(row.weekend_date)}</td>
               <td class="py-1 text-right">${row.team_score.toLocaleString()}</td>
               <td class="py-1 text-right pl-2">${row.team_rank} ${rankEmojis[row.team_rank] || ''}</td>
             </tr>`;
@@ -96,7 +102,7 @@
                     html += `<tr class="border-t">
               <td class="py-1 text-left">${row.player_tag}</td>
               <td class="py-1 text-right">${row.score.toLocaleString()}</td>
-              <td class="py-1 text-right pl-2">${row.weekend_date}</td>
+              <td class="py-1 text-right pl-2">${formatDate(row.weekend_date)}</td>
             </tr>`;
                 });
                 html += `</table>`;
