@@ -27,7 +27,7 @@
                     <div id="summary" class="text-me font-medium p-4"></div>
                 </div>
                 <div class="rounded-lg p-6 hover:shadow-md transition-shadow">
-                    <div id="newest-high-scores" class="text-lg font-medium p-4"></div>
+                    <div id="alltime-highlights" class="text-lg font-medium p-4"></div>
                 </div>
                 <div class="rounded-lg p-6 hover:shadow-md transition-shadow">
                     <div id="way-above-average" class="text-lg font-medium p-4"></div>
@@ -62,45 +62,61 @@
     <div id="footer"></div>
 
     <script>
-        fetch(getReportUrl())
+        function getReportUrl() {
+            if (!window.__weekendReportVersion) {
+                window.__weekendReportVersion = Date.now();
+            }
+            return `last_weekend_report.json?v=${window.__weekendReportVersion}`;
+        }
+    </script>
+
+    <script>
+        fetch('alltime_highlights.json?v=' + Date.now())
             .then(response => response.json())
             .then(data => {
-                const highScores = data.players_exceeded_past_top;
+                const rankEmojis = { '#1': '🥇', '#2': '🥈', '#3': '🥉' };
+                let html = '';
 
-                let html = `<h3 class="text-xl font-bold mb-4">Newest High Scores</h3>`;
-
-                if (!highScores || highScores.length === 0) {
-                    html += `<p>No new high scores.</p>`;
-                } else {
-                    html += `<table class="w-full border-collapse">
-            <thead>
-              <tr class="border-b">
-                <th class="text-left px-4 py-2"></th>
-                <th class="text-center px-4 py-2">Rank</th>
-                <th class="text-right text-lg px-4 py-2">⭐</th>
-                <th class="text-right px-4 py-2">🕰️</th>
-                <th class="text-center px-4 py-2">⬆️</th>
-              </tr>
-            </thead>
-            <tbody>`;
-
-                    highScores.forEach(player => {
-                        html += `<tr class="border-b">
-              <td class="text-left px-4 py-2">${player.player_tag}</td>
-              <td class="text-center px-4 py-2">${player.weekend_rank}</td>
-              <td class="text-right px-4 py-2">${player.recent_score.toLocaleString()}</td>
-              <td class="text-right px-4 py-2">${player.past_top_score.toLocaleString()}</td>
-              <td class="text-center px-4 py-2">${player.percent_above}%</td>
+                // --- Top 5 Team Scores ---
+                html += `<h3 class="text-xl font-bold mb-2">Top Team Weekends 🏆</h3>`;
+                html += `<table class="w-full border-collapse mb-4">`;
+                data.top_team_scores.forEach(row => {
+                    html += `<tr class="border-t">
+              <td class="py-1 text-left">${row.weekend_date}</td>
+              <td class="py-1 text-right">${row.team_score.toLocaleString()}</td>
+              <td class="py-1 text-right pl-2">${row.team_rank} ${rankEmojis[row.team_rank] || ''}</td>
             </tr>`;
-                    });
+                });
+                html += `</table>`;
 
-                    html += `</tbody></table>`;
-                }
+                // --- Top 5 Player Scores ---
+                html += `<h3 class="text-xl font-bold mb-2">Top Player Scores ⭐</h3>`;
+                html += `<table class="w-full border-collapse mb-4">`;
+                data.top_player_scores.forEach(row => {
+                    html += `<tr class="border-t">
+              <td class="py-1 text-left">${row.player_tag}</td>
+              <td class="py-1 text-right">${row.score.toLocaleString()}</td>
+              <td class="py-1 text-right pl-2">${row.weekend_date}</td>
+            </tr>`;
+                });
+                html += `</table>`;
 
-                document.getElementById('newest-high-scores').innerHTML = html;
+                // --- Top 3 Player Averages ---
+                html += `<h3 class="text-xl font-bold mb-2">Top Averages 📈</h3>`;
+                html += `<table class="w-full border-collapse">`;
+                data.top_player_averages.forEach(row => {
+                    html += `<tr class="border-t">
+              <td class="py-1 text-left">${row.player_tag}</td>
+              <td class="py-1 text-right">${row.avg_score.toLocaleString()}</td>
+              <td class="py-1 text-right pl-2 text-gray-500 text-sm">(${row.weekends_played} wknds)</td>
+            </tr>`;
+                });
+                html += `</table>`;
+
+                document.getElementById('alltime-highlights').innerHTML = html;
             })
             .catch(error => {
-                console.error('Error fetching high scores:', error);
+                console.error('Error fetching alltime highlights:', error);
             });
     </script>
 

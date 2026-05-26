@@ -82,7 +82,7 @@ fetch(getReportUrl())
 
         // --- Top Three Players Table ---
         const topPlayers = data.top_three_players;
-        let tableHTML = `<h3 class="text-xl font-bold mb-4">The Top Three!</h3>`;
+        let tableHTML = `<h3 class="text-xl font-bold mb-4">The Top Three (${data.weekend_date})</h3>`;
         tableHTML += `<table class="w-full border-collapse">`;
 
         // For each player, add a table row with:

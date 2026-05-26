@@ -1,0 +1,78 @@
+{
+  "top_team_scores": [
+    {
+      "weekend_date": "2026-01-25",
+      "team_score": 103224,
+      "team_rank": "#1"
+    },
+    {
+      "weekend_date": "2026-02-01",
+      "team_score": 96481,
+      "team_rank": "#2"
+    },
+    {
+      "weekend_date": "2025-11-30",
+      "team_score": 95496,
+      "team_rank": "#2"
+    },
+    {
+      "weekend_date": "2026-04-19",
+      "team_score": 94536,
+      "team_rank": "#2"
+    },
+    {
+      "weekend_date": "2026-01-11",
+      "team_score": 93779,
+      "team_rank": "#2"
+    }
+  ],
+  "top_player_scores": [
+    {
+      "player_tag": "weeminx",
+      "score": 18151,
+      "weekend_date": "2024-12-08",
+      "weekend_rank": 1
+    },
+    {
+      "player_tag": "weeminx",
+      "score": 15005,
+      "weekend_date": "2025-04-06",
+      "weekend_rank": 1
+    },
+    {
+      "player_tag": "weeminx",
+      "score": 14030,
+      "weekend_date": "2025-01-26",
+      "weekend_rank": 1
+    },
+    {
+      "player_tag": "weeminx",
+      "score": 12000,
+      "weekend_date": "2025-02-09",
+      "weekend_rank": 1
+    },
+    {
+      "player_tag": "Stranger",
+      "score": 11813,
+      "weekend_date": "2026-02-08",
+      "weekend_rank": 1
+    }
+  ],
+  "top_player_averages": [
+    {
+      "player_tag": "weeminx",
+      "avg_score": 4904,
+      "weekends_played": 70
+    },
+    {
+      "player_tag": "Dewey",
+      "avg_score": 4402,
+      "weekends_played": 120
+    },
+    {
+      "player_tag": "char",
+      "avg_score": 3813,
+      "weekends_played": 36
+    }
+  ]
+}
