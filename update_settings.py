@@ -2,22 +2,24 @@ import os
 import json
 from pathlib import Path
 
-def find_repo_root():
+def find_repo_root(start_path=None):
     """
     Finds the repository root.
     """
-    current_path = Path.cwd()
+    if start_path is None:
+        start_path = Path(__file__).resolve().parent
+
+    current_path = Path(start_path)
     while current_path != current_path.parent:
         if (current_path / '.git').exists():
             return current_path
         current_path = current_path.parent
     return None
 
-def find_workspace_file():
+def find_workspace_file(repo_root):
     """
     Finds the first `.code-workspace` file in the repository root.
     """
-    repo_root = find_repo_root()
     if not repo_root:
         print("Repository root not found.")
         return None
@@ -85,12 +87,16 @@ def update_workspace_file(workspace_file):
     else:
         print(f"No changes needed for workspace file: {workspace_file}")
 
-def update_project_settings(project_paths):
+def update_project_settings(project_paths, repo_root):
     """
     Updates `.vscode/settings.json` files for each project path in the workspace.
     """
     for project_path in project_paths:
-        settings_path = Path(project_path) / ".vscode/settings.json"
+        project_root = Path(project_path)
+        if not project_root.is_absolute():
+            project_root = repo_root / project_root
+
+        settings_path = project_root / ".vscode/settings.json"
         if not settings_path.exists():
             print(f"Settings file not found for project: {settings_path}")
             continue
@@ -100,24 +106,24 @@ def update_project_settings(project_paths):
         else:
             interpreter_path = ".venv/bin/python"
 
-        with open(settings_path, "r") as file:
+        with open(settings_path, "r", encoding="utf-8") as file:
             settings = json.load(file)
 
         new_settings = settings.copy()
         new_settings["python.defaultInterpreterPath"] = interpreter_path
 
         if settings != new_settings:
-            with open(settings_path, "w") as file:
+            with open(settings_path, "w", encoding="utf-8") as file:
                 json.dump(new_settings, file, indent=4)
                 print(f"Updated settings for project: {settings_path}")
         else:
             print(f"No changes needed for project settings: {settings_path}")
 
-def update_root_settings():
+def update_root_settings(repo_root):
     """
     Updates the root `.vscode/settings.json` file if it exists.
     """
-    settings_path = Path(".vscode/settings.json")
+    settings_path = repo_root / ".vscode/settings.json"
     if not settings_path.exists():
         print(f"Root settings file not found: {settings_path}")
         return
@@ -127,14 +133,14 @@ def update_root_settings():
     else:
         interpreter_path = ".venv/bin/python"
 
-    with open(settings_path, "r") as file:
+    with open(settings_path, "r", encoding="utf-8") as file:
         settings = json.load(file)
 
     new_settings = settings.copy()
     new_settings["python.defaultInterpreterPath"] = interpreter_path
 
     if settings != new_settings:
-        with open(settings_path, "w") as file:
+        with open(settings_path, "w", encoding="utf-8") as file:
             json.dump(new_settings, file, indent=4)
             print(f"Updated root settings: {settings_path}")
     else:
@@ -144,8 +150,13 @@ def main():
     """
     Main function to update all configuration files.
     """
+    repo_root = find_repo_root()
+    if not repo_root:
+        print("Repository root not found.")
+        return
+
     # Find the workspace file
-    workspace_file = find_workspace_file()
+    workspace_file = find_workspace_file(repo_root)
     if workspace_file:
         print(f"Workspace file found: {workspace_file}")
         # Update workspace settings
@@ -155,12 +166,12 @@ def main():
         project_paths = get_workspace_folders(workspace_file)
 
         # Update project settings
-        update_project_settings(project_paths)
+        update_project_settings(project_paths, repo_root)
     else:
         print("No workspace file found.")
 
     # Update root settings
-    update_root_settings()
+    update_root_settings(repo_root)
 
 if __name__ == "__main__":
     main()

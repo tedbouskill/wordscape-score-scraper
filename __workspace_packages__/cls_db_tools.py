@@ -353,6 +353,34 @@ class DbRepositorySingleton:
 
         return
 
+    def is_player_active(self, player_id):
+        """
+        Return True if the player is marked active in the players table.
+        """
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT is_active FROM players WHERE id = ?", (player_id,))
+        row = cursor.fetchone()
+        if not row:
+            return False
+        try:
+            return bool(row[0])
+        except Exception:
+            return False
+
+    def is_player_on_team(self, player_id):
+        """
+        Return True if the player is marked on_team in the players table.
+        """
+        cursor = self.connection.cursor()
+        cursor.execute("SELECT on_team FROM players WHERE id = ?", (player_id,))
+        row = cursor.fetchone()
+        if not row:
+            return False
+        try:
+            return bool(row[0])
+        except Exception:
+            return False
+
 # Example usage
 #if __name__ == "__main__":
 #    def create_instance(value):

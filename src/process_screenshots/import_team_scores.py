@@ -31,7 +31,15 @@ reader = easyocr.Reader(['en'])
 
 PLAYER_TAG_IGNORE_LIST = [
     "DestroyaDrew",
-    "Claflinxs"
+    "Claflinxs",
+    "Suriel",
+    "FleurDeLys",
+    "jeda",
+    "VZn",
+    "Disqualified",
+    "I_give_up",
+    "fin",
+    "itme"
 ]
 
 # Common OCR misreadings for player tags
@@ -127,6 +135,7 @@ def process_image(file_name: str) -> tuple:
     player_results = []
     unmatched_texts = []
     score_results = []
+    ignored_player_boxes = []
 
     # Crop the players image and extract the player names and scores
     players_img = ImageTools.crop_image_opencv(img, 300, 1030, 900, new_height - 1030)
@@ -141,6 +150,7 @@ def process_image(file_name: str) -> tuple:
         # Skip tags on the ignore list entirely (not an error, just not our players).
         if corrected_text.strip() in PLAYER_TAG_IGNORE_SET:
             logging.debug(f"Ignoring tag on ignore list: '{corrected_text}'")
+            ignored_player_boxes.append(box)
             continue
 
         player_id = db_repository.get_player_id(corrected_text)
@@ -187,6 +197,12 @@ def process_image(file_name: str) -> tuple:
                 matched = True
                 break
         if not matched:
+            for ignored_box in ignored_player_boxes:
+                ignored_y = ignored_box[0][1]
+                if 0 <= abs(num_y - ignored_y) < 100:
+                    matched = True
+                    break
+        if not matched:
             unmatched_scores.append((num_text, num_confidence))
 
     # Print matched results
@@ -207,17 +223,47 @@ def process_image(file_name: str) -> tuple:
     return matches, unmatched_texts, unmatched_scores, rank_txt
 
 def process_player_matches(matches, weekend_date, friday_date):
+    """
+    Process matched player tags and scores.
+
+    Returns True if all matched player scores were successfully recorded (and players are active),
+    otherwise returns False so the caller can avoid deleting the source image.
+    """
+    all_ok = True
 
     for player_tag, score in matches:
         logging.info(f"Player: {player_tag}, Score: {score}")
 
-        # If I can improve the OCR scan of player names, I can uncomment the next line
-        #player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
+        # Ensure the player exists; create if missing (this also marks new players active)
         player_id = db_repository.get_player_id(player_tag)
+        if not player_id:
+            logging.info(f"Player '{player_tag}' not found; creating new player with start date {friday_date}")
+            player_id = db_repository.get_player_id_create_if_new(player_tag, friday_date)
 
-        db_repository.upsert_weekend_player_score(weekend_date, player_id, score)
+        # Check if player is active
+        is_active = db_repository.is_player_active(player_id)
+        
+        # If not active, check if they're on_team; if so, activate them
+        if not is_active:
+            is_on_team = db_repository.is_player_on_team(player_id)
+            if is_on_team:
+                logging.info(f"Player '{player_tag}' (id={player_id}) is on_team but not active; activating")
+                db_repository.set_player_active(player_id)
+                is_active = True
+        
+        # If still not active, skip this score
+        if not is_active:
+            logging.error(f"Player '{player_tag}' (id={player_id}) is not active and not on_team; skipping score insertion")
+            all_ok = False
+            continue
 
-    return
+        try:
+            db_repository.upsert_weekend_player_score(weekend_date, player_id, score)
+        except Exception as e:
+            logging.exception(f"Failed to upsert score for player '{player_tag}' (id={player_id}): {e}")
+            all_ok = False
+
+    return all_ok
 
 def process_img_files(images):
 
@@ -278,7 +324,12 @@ def process_img_files(images):
                 db_repository.upsert_weekend_team_rank(sunday_date, rank_txt)
 
             # Insert the player scores including creating new players and inserting friday as the join date
-            process_player_matches(matches, sunday_date, friday_date)
+            success = process_player_matches(matches, sunday_date, friday_date)
+
+            # If any player score was not recorded (for example player not active), skip deleting the file
+            if not success:
+                logging.error("One or more player scores were not recorded (inactive or error); skipping deletion of image")
+                continue
 
             # This will skip deleting the file
             if (len(unmatched_text) > 0):

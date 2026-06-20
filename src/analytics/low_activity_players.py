@@ -261,7 +261,7 @@ def main():
     # Configure these constants directly.
     EXCLUDED_PLAYERS = [
         'Hobbes',
-        'Elen',
+        'weeminx',
     ]
     MIN_INACTIVE_WEEKS = 4
     MIN_TENURE_WEEKS_FOR_REVIEW = 6
