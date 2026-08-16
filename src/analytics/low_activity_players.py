@@ -261,10 +261,10 @@ def main():
     # Configure these constants directly.
     EXCLUDED_PLAYERS = [
         'Hobbes',
-        'weeminx',
+        #'weeminx',
     ]
     MIN_INACTIVE_WEEKS = 4
-    MIN_TENURE_WEEKS_FOR_REVIEW = 6
+    MIN_TENURE_WEEKS_FOR_REVIEW = 0
     MAX_3MO_PLAY_RATIO = 0.34
     RECENT_WEEKS_FOR_SCORE_CHECK = 9
     MAX_RECENT_AVG_SCORE = 300
